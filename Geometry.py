@@ -16,7 +16,7 @@ import numpy as np
 import numpy.linalg as LA
 
 
-class Point:
+class Point(object):
     """Point in 3D space"""
     def __init__(self, x, y, z):
         """Initialize a point with given cartesian coordinates"""
@@ -79,7 +79,7 @@ class Point:
     def distance(self, other):
         """Return the distance to another point"""
         assert isinstance(other, Point)
-        distance = (self.x - other.x)**2 + (self.y - other.y)**2
+        distance = (self.x - other.x)**2 + (self.y - other.y)**2 + (self.z - other.z)**2
         return np.sqrt(distance)
 
     def is_online(self, line):
@@ -88,70 +88,17 @@ class Point:
         return line.containsPoint(self)
 
 
-class Point2D:
-    """Point in Plane"""
+class Point2D(Point):
+    """Point in Plane, derived from the 3D point class"""
     def __init__(self, x, y):
-        self._coord = [x, y]
-
-    @property
-    def x(self):
-        """Coordinate x for a 2D point"""
-        return self._coord[0]
-
-    @x.setter
-    def x(self, val):
-        self._coord[0] = val
-
-    @property
-    def y(self):
-        """Coordinate y for a 2D point"""
-        return self._coord[1]
-
-    @y.setter
-    def y(self, val):
-        self._coord[1] = val
-
-    @property
-    def coord(self):
-        """Coordinate for a 2D point"""
-        return self._coord
-
-    @coord.setter
-    def coord(self, val):
-        self._coord = val
-
-    def __eq__(self, other):
-        assert isinstance(other, Point2D)
-        return (self.x == other.x) and (self.y == other.y)
-
-    def __str__(self):
-        """string representation of 2D point"""
-        return "(" + str(self._coord[1: -1]) + ")"
+        super(Point2D, self).__init__(x, y, 0)
 
     def __len__(self):
         return 2
 
-    def __add__(self, other):
-        assert isinstance(other, Point2D)
-        return Point2D(self.x + other.x, self.y + other.y)
-
-    def distance(self, other):
-        assert isinstance(other, Point2D)
-        distance = (self.x - other.x)**2 + (self.y - other.y)**2
-        return np.sqrt(distance)
-
-    def is_online(self, line):
-        """
-        quick test to see if a point is on the given line
-        """
-        assert isinstance(line, Line2D)
-        return line.containsPoint(self)
-
 
 class Line:
-    """
-    Line in 3D
-    """
+    """Line in 3D space"""
     def __init__(self, ptStart, ptEnd):
         """
         :param ptStart: A Point object for the starting point
