@@ -80,8 +80,7 @@ class Point:
         """Return the distance to another point"""
         assert isinstance(other, Point)
         distance = (self.x - other.x)**2 + (self.y - other.y)**2
-        distance = np.sqrt(distance)
-        return distance
+        return np.sqrt(distance)
 
     def is_online(self, line):
         """Quick test is the point is on the given line"""
@@ -90,20 +89,44 @@ class Point:
 
 
 class Point2D:
-    """
-    2D Point class
-    """
+    """Point in Plane"""
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
+        self._coord = [x, y]
+
+    @property
+    def x(self):
+        """Coordinate x for a 2D point"""
+        return self._coord[0]
+
+    @x.setter
+    def x(self, val):
+        self._coord[0] = val
+
+    @property
+    def y(self):
+        """Coordinate y for a 2D point"""
+        return self._coord[1]
+
+    @y.setter
+    def y(self, val):
+        self._coord[1] = val
+
+    @property
+    def coord(self):
+        """Coordinate for a 2D point"""
+        return self._coord
+
+    @coord.setter
+    def coord(self, val):
+        self._coord = val
 
     def __eq__(self, other):
         assert isinstance(other, Point2D)
         return (self.x == other.x) and (self.y == other.y)
 
     def __str__(self):
-        outString = "2D Point: ({}, {})".format(self.x, self.y)
-        return outString
+        """string representation of 2D point"""
+        return "(" + str(self._coord[1: -1]) + ")"
 
     def __len__(self):
         return 2
@@ -112,19 +135,12 @@ class Point2D:
         assert isinstance(other, Point2D)
         return Point2D(self.x + other.x, self.y + other.y)
 
-    def getDistance(self, other):
+    def distance(self, other):
         assert isinstance(other, Point2D)
         distance = (self.x - other.x)**2 + (self.y - other.y)**2
         return np.sqrt(distance)
 
-    def getCoordinate(self):
-        """
-        return a tuple of coordinates
-        """
-        coord = (self.x, self.y)
-        return coord
-
-    def isOnline(self, line):
+    def is_online(self, line):
         """
         quick test to see if a point is on the given line
         """
