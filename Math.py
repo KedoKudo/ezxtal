@@ -19,7 +19,7 @@ class Vector:
         """Return the dimension of the vector"""
         return len(self._coords)
 
-    def __getattr__(self, item):
+    def __getitem__(self, item):
         """Return item_th coordinate of the vector"""
         return self._coords[item]
 
@@ -50,13 +50,30 @@ class Vector:
         """Produce a string representation of vector"""
         return "<" + str(self._coords)[1:-1] + ">"  # remove the '[' ']' in the str(list)
 
-    def vector_length(self):
+    def vector_norm(self):
         """Return the length of a vector"""
-        vector_length = 0
+        vector_norm = 0
         for i in range(len(self)):
-            vector_length += self._coords[i] ** 2
-        vector_length = np.sqrt(vector_length)
+            vector_norm += self._coords[i] ** 2
+        vector_length = np.sqrt(vector_norm)
         return vector_length
+
+    @property
+    def coord(self):
+        """new class style for a getter"""
+        return self._coords
+
+    @coord.setter
+    def coord(self, value):
+        """new style setter"""
+        if len(self) != len(value):
+            raise ValueError("dimension must agree")
+        self._coords = value
+
+    @coord.deleter
+    def coord(self):
+        """new style deleter"""
+        del self._coords
 
 
 def find_angle(sin_val, cos_val):
