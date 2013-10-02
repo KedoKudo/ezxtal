@@ -12,30 +12,57 @@ __author__ = "KenZ"
 #
 
 import sys
-import random
 import numpy as np
 import numpy.linalg as LA
 
 
 class Point:
-    """
-    Point in 3D
-    """
+    """Point in 3D space"""
     def __init__(self, x, y, z):
-        """
-        :param x: coordinate x
-        :param y: coordinate y
-        :param z: coordinate z
-        """
-        self.x = x
-        self.y = y
-        self.z = z
+        """Initialize a point with given cartesian coordinates"""
+        self._coord = [x, y, z]
+
+    @property
+    def x(self):
+        """Coordinate x for point"""
+        return self._coord[0]
+
+    @x.setter
+    def x(self, val):
+        self._coord[0] = val
+
+    @property
+    def y(self):
+        """Coordinate y for point"""
+        return self._coord[1]
+
+    @y.setter
+    def y(self, val):
+        self._coord[1] = val
+
+    @property
+    def z(self):
+        """Coordinate z for point"""
+        return self._coord[2]
+
+    @z.setter
+    def z(self, val):
+        self._coord[2] = val
+
+    @property
+    def coord(self):
+        """Coordinates of point"""
+        return self._coord
+
+    @coord.setter
+    def coord(self, val):
+        if len(val) != 3:
+            raise ValueError("Need 3 coordinates")
+        self._coord = val
 
     def __str__(self):
-        outString = "Point: ({}, {}, {})\n".format(self.x,
-                                                   self.y,
-                                                   self.z)
-        return outString
+        """String representation of Point"""
+        return "(" + str(self._coord)[1: -1] + ")"
 
     def __eq__(self, other):
         assert isinstance(other, Point)
@@ -49,26 +76,15 @@ class Point:
     def __len__(self):
         return 3
 
-    def getDistance(self, other):
-        """
-        return the distance to another point
-        """
+    def distance(self, other):
+        """Return the distance to another point"""
         assert isinstance(other, Point)
         distance = (self.x - other.x)**2 + (self.y - other.y)**2
         distance = np.sqrt(distance)
         return distance
 
-    def getCoordinate(self):
-        """
-        return a tuple of coordinates for current point
-        """
-        coord = (self.x, self.y, self.z)
-        return coord
-
-    def isOnline(self, line):
-        """
-        quick test is the point is on the given line
-        """
+    def is_online(self, line):
+        """Quick test is the point is on the given line"""
         assert isinstance(line, Line)
         return line.containsPoint(self)
 
