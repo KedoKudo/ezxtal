@@ -203,6 +203,7 @@ class Line:
 
     def dist2line(self, other):
         """Return the distance between two line is two lines are skew/parallel"""
+        # NOTE: what will happen if two line intercept outside lines
         if self == other or self == -other:
             return 0.0  # special case where two line are the same/mirror
         elif self.is_parallel(other):
@@ -231,14 +232,22 @@ class Line:
 
     def is_skewed_from(self, other):
         """Quick test to see if two lines are skew from each other"""
-        ## forget the intercept case here!!!
-        return not self.is_parallel(other)
+        return not self.is_coplanar(other)
 
-    def getIntercept(self, other):
-        """
-        return the intercept point by the other line
-        """
-        assert isinstance(other, Line)
+    def get_intercept(self, other):
+        """Return the intercept point by the other line"""
+        # NOTE: current cannot work on the overlapping lines
+        if self.is_skewed_from(other):
+            return None  # skewed lines do not have intercept
+        elif self.contain_point(other.start_pt):
+            return other.start_pt
+        elif self.contain_point(other.end_pt):
+            return other.end_pt
+        elif self.is_parallel(other):
+            return None  # parallel lines do not intercept
+        else:
+            pass
+        '''
         if self.is_parallel(other):
             # parallel lines do not intercept
             intercept = None
@@ -277,12 +286,19 @@ class Line:
                 # the intercept point is beyond two line
                 intercept = None
         return intercept
+        '''
 
-    def isIntercepted(self, other):
-        """
-        quick test whether intercepted by another line
-        """
-        return self.getIntercept(other) is not None
+    def is_intercepted(self, other):
+        """Quick test whether intercepted by another line"""
+        if self.is_skewed_from(other):
+            return False
+        else:
+            if self.is_parallel(other):
+                return False
+            else:
+                if self.dist2line(other) > 1e-4:
+
+        return self.get_intercept(other) is not None
 
 
 class Line2D:
@@ -639,7 +655,7 @@ class Polygon2D:
             testLine = Line2D(rayOrigin, point)
         count = 0
         for edge in self.getEdges():
-            if edge.isIntercepted(testLine):
+            if edge.is_intercepted(testLine):
                 count += 1
         if count % 2 == 0:
             return False

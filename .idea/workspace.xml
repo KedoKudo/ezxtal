@@ -39,7 +39,7 @@
       <file leaf-file-name="Geometry.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Geometry.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="228" column="65" selection-start="7450" selection-end="7450" vertical-scroll-proportion="0.4651163" vertical-offset="1920" max-vertical-offset="9525">
+            <state line="205" column="68" selection-start="6017" selection-end="6017" vertical-scroll-proportion="0.4651163" vertical-offset="1575" max-vertical-offset="9765">
               <folding>
                 <element signature="e#276#286#0" expanded="true" />
                 <element signature="e#359#2134#0" expanded="false" />
@@ -352,7 +352,11 @@
       <created>1380730552643</created>
       <updated>1380730552643</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Fix some syntax error in the Line class. There seems to be more .">
+      <created>1380832663722</created>
+      <updated>1380832663722</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -392,10 +396,13 @@
     <MESSAGE value="update Point class with new style class" />
     <MESSAGE value="update 2D Point class with new style class" />
     <MESSAGE value="use inheritance to define Point2D to avoid code doubling." />
-    <option name="LAST_COMMIT_MESSAGE" value="use inheritance to define Point2D to avoid code doubling." />
+    <MESSAGE value="Fix some syntax error in the Line class. There seems to be more ." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix some syntax error in the Line class. There seems to be more ." />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Math.py">
@@ -481,7 +488,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Geometry.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="228" column="65" selection-start="7450" selection-end="7450" vertical-scroll-proportion="0.4651163" vertical-offset="1920" max-vertical-offset="9525">
+        <state line="205" column="68" selection-start="6017" selection-end="6017" vertical-scroll-proportion="0.4651163" vertical-offset="1575" max-vertical-offset="9765">
           <folding>
             <element signature="e#276#286#0" expanded="true" />
             <element signature="e#359#2134#0" expanded="false" />
