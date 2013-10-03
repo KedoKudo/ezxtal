@@ -13,7 +13,7 @@ __author__ = "KenZ"
 
 import sys
 import numpy as np
-import numpy.linalg as LA
+import numpy.linalg as La
 
 
 class Point(object):
@@ -65,13 +65,14 @@ class Point(object):
         return "(" + str(self._coord)[1: -1] + ")"
 
     def __eq__(self, other):
-        assert isinstance(other, Point)
-        flag = False
         if np.absolute(self.x - other.x) < 1e-6:
             if np.absolute(self.y - other.y) < 1e-6:
                 if np.absolute(self.z - other.z) < 1e-6:
-                    flag = True
-        return flag
+                    return True
+        return False
+
+    def __ne__(self, other):
+        return not self == other
 
     def __len__(self):
         return 3
@@ -85,7 +86,7 @@ class Point(object):
     def is_online(self, line):
         """Quick test is the point is on the given line"""
         assert isinstance(line, Line)
-        return line.containsPoint(self)
+        return line.contain_point(self)
 
 
 class Point2D(Point):
@@ -99,173 +100,155 @@ class Point2D(Point):
 
 class Line:
     """Line in 3D space"""
-    def __init__(self, ptStart, ptEnd):
-        """
-        :param ptStart: A Point object for the starting point
-        :param ptEnd: A Point object for the end point
-        """
-        assert isinstance(ptStart, Point)
-        assert isinstance(ptEnd, Point)
-        if ptStart == ptEnd:
-            print "Need two point to define a line"
-            sys.exit(-1)
+    def __init__(self, pt_start, pt_end):
+        """Initialize a line with 2 point in 3D space"""
+        if pt_start == pt_end:
+            raise ValueError("Need two different points to define a line in space")
         else:
-            self.ptStart = Point(ptStart.x, ptStart.y, ptStart.z)
-            self.ptEnd = Point(ptEnd.x, ptEnd.y, ptEnd.z)
+            self._start = pt_start
+            self._end = pt_end
+
+    @property
+    def start_pt(self):
+        """Start point of line"""
+        return self._start
+
+    @start_pt.setter
+    def start_pt(self, new_start):
+        self._start = new_start
+
+    @property
+    def end_pt(self):
+        """End point of line"""
+        return self._end
+
+    @end_pt.setter
+    def end_pt(self, new_end):
+        self._end = new_end
+
+    @property
+    def length(self):
+        """Length of line"""
+        temp = [self.start_pt.x - self.end_pt.x,
+                self.start_pt.y - self.end_pt.y,
+                self.start_pt.z - self.end_pt.z]
+        result = temp[0]**2 + temp[1]**2 + temp[2]**2
+        return np.sqrt(result)
+
+    @property
+    def direction(self):
+        """Direction of line"""
+        temp = [self.end_pt.x - self.start_pt.x,
+                self.end_pt.y - self.start_pt.y,
+                self.end_pt.z - self.start_pt.z]
+        result = [float(item/self.length) for item in temp]
+        return result
 
     def __str__(self):
-        """
-        formatted output for Line object
-        """
-        outString = "3D Line Object:\n"
-        outString += "Starting at ({}, {}, {})\n".format(self.ptStart.x,
-                                                         self.ptStart.y,
-                                                         self.ptStart.z)
-        outString += "End at ({}, {}, {})\n".format(self.ptEnd.x,
-                                                    self.ptEnd.y,
-                                                    self.ptEnd.z)
-        temp_direc = self.getDirection()
-        outString += "Direction: <{}, {}, {}>\n".format(temp_direc[0],
-                                                        temp_direc[1],
-                                                        temp_direc[2])
-        return outString
+        """String representation of line object"""
+        return str(self.start_pt) + "-->" + str(self.end_pt)
+
+    def __neg__(self):
+        """line with opposite direction"""
+        return Line(self.end_pt, self.start_pt)
 
     def __eq__(self, other):
-        """
-        test if the same line
-        """
-        assert isinstance(other, Line)
-        flag = False
-        if self.ptStart == other.ptStart:
-            if self.ptEnd == other.ptEnd:
-                flag = True
-        return flag
+        """Test if the same line"""
+        if self.start_pt == other.start_pt:
+            if self.end_pt == other.end_pt:
+                return True
+        return False
 
-    def getDirection(self):
-        """
-        return a tuple of unit vector denoting line direction
-        """
-        temp_vector = [self.ptEnd.x - self.ptStart.x,
-                       self.ptEnd.y - self.ptStart.y,
-                       self.ptEnd.z - self.ptStart.z]
-        direc = [float(item)/LA.norm(temp_vector) for item in temp_vector]
-        return direc
+    def __ne__(self, other):
+        return not self == other
 
-    def getLength(self):
-        """
-        return the length of the Line object
-        """
-        temp_vector = [self.ptEnd.x - self.ptStart.x,
-                       self.ptEnd.y - self.ptStart.y,
-                       self.ptEnd.z - self.ptStart.z]
-        return LA.norm(temp_vector)
+    def is_parallel(self, other):
+        """Test if two Line objects are parallel in space"""
+        if 1 - np.absolute(np.dot(self.direction, other.direction)) < 1e-4:
+            return True
+        return False
 
-    def isParallel(self, other):
-        """
-        test if two Line objects are parallel in space
-        """
-        assert isinstance(other, Line)
-        flag = False
-        direc_0 = self.getDirection()
-        direc_1 = other.getDirection()
-        if 1 - np.absolute(np.dot(direc_0, direc_1)) < 1e-6:
-            flag = True
-        return flag
-
-    def containsPoint(self, point):
-        """
-        test is a point is on line
-        """
-        assert isinstance(point, Point)
-        flag = False
-        if point == self.ptStart:
-            flag = True
-        elif point == self.ptEnd:
-            flag = True
+    def contain_point(self, point):
+        """Test is a point is on line"""
+        if point == self.start_pt:
+            return True  # special case of start point
+        elif point == self.end_pt:
+            return True  # special case of end point
         else:
-            temp_line = Line(self.ptStart, point)
-            if self.isParallel(temp_line):
-                minX = min(self.ptStart.x, self.ptEnd.x)
-                maxX = max(self.ptStart.x, self.ptEnd.x)
-                minY = min(self.ptStart.y, self.ptEnd.y)
-                maxY = max(self.ptStart.y, self.ptEnd.y)
-                minZ = min(self.ptStart.z, self.ptEnd.z)
-                maxZ = max(self.ptStart.z, self.ptEnd.z)
-                if minX <= point.x <= maxX:
-                    if minY <= point.y <= maxY:
-                        if minZ <= point.z <= maxZ:
-                            flag = True
-        return flag
+            line1 = Line(point, self.start_pt)
+            line2 = Line(point, self.end_pt)
+            if np.dot(line1.direction, line2.direction) + 1 < 1e-4:
+                return True  # when point online, the angle between line1 and line2 should be 180
+        return False
 
-    def isCoplanar(self, other):
-        """
-        quick test if two lines are in the same plane
-        """
-        assert isinstance(other, Line)
-        flag = False
-        if self.isParallel(other):
-            # parallel planes are always coplanar
-            flag = True
-        else:
-            # non-parallel case: skew or intercept
-            normal = np.cross(self.getDirection(), other.getDirection())
-            temp_line = Line(self.ptStart, other.ptStart)
-            test = np.dot(normal, temp_line.getDirection())
-            if np.absolute(test) < 1e-6:
-                # 90 degree means coplanar
-                flag = True
-        return flag
-
-    def getDist2Line(self, other):
-        """
-        return the distance between two line is two lines are skew/parallel
-        """
-        assert isinstance(other, Line)
-        if self.isParallel(other):
-            # if two line are parallel to each other
-            if self.ptStart != other.ptStart:
-                temp_line = Line(self.ptStart, other.ptStart)
+    def is_coplanar(self, other):
+        """Quick test if two lines are in the same plane"""
+        if self == other:
+            return True  # special case where two line are the same
+        elif self == -other:
+            return True  # special case where two line are mirrored
+        elif self.is_parallel(other):
+            return True  # Parallel lines are always coplanar
+        else:  # either skew or intercept
+            if self.contain_point(other.start_pt):
+                return True  # two line intercept, thus coplanar
+            elif self.contain_point(other.end_pt):
+                return True  # two line intercept, thus coplanar
             else:
-                temp_line = Line(self.ptStart, other.ptEnd)
-            normal = np.cross(temp_line.getDirection(), self.getDirection())
-            normal = [float(item)/LA.norm(normal) for item in normal]
-            vDist = np.cross(normal, self.getDirection())
-            vDist = [float(item)/LA.norm(vDist) for item in vDist]  # unit vector along distance direction
-            distance = temp_line.getLength() * np.dot(temp_line.getDirection(), vDist)
-        elif self.isSkewedFrom(other):
-            # two line skewed
-            normal = np.cross(self.getDirection(), other.getDirection())
-            normal = [float(item)/LA.norm(normal) for item in normal]
-            temp_line = Line(self.ptStart, other.ptStart)
-            distance = temp_line.getLength() * np.dot(temp_line.getDirection(), normal)
-        else:
-            # two line intercept
-            distance = 0.0
-        return np.absolute(distance)
+                normal = np.cross(self.direction, other.direction)
+                temp_line = Line(self.start_pt, other.start_pt)
+                if np.absolute(normal, temp_line) < 1e-4:
+                    return True
+        return False
 
-    def isSkewedFrom(self, other):
-        """
-        quick test to see if two lines are skew from each other
-        """
-        assert isinstance(other, Line)
-        flag = not self.isCoplanar(other)
-        return flag
+    def dist2line(self, other):
+        """Return the distance between two line is two lines are skew/parallel"""
+        if self == other or self == -other:
+            return 0.0  # special case where two line are the same/mirror
+        elif self.is_parallel(other):
+            if self.contain_point(other.start_pt) or self.contain_point(other.end_pt):
+                return 0.0  # two lines overlapped
+            else:
+                temp_line = Line(self.start_pt, other.start_pt)
+                plane_normal = np.cross(temp_line.direction, self.direction)
+                plane_normal = [item/La.norm(plane_normal) for item in plane_normal]
+                common_normal = np.cross(plane_normal, self.direction)
+                result = temp_line.length * np.dot(common_normal, temp_line.direction)
+                result = np.absolute(result)  # the cos could be negative
+                if result < 1e-4:
+                    result = min(Line(self.start_pt, other.start_pt).length,
+                                 Line(self.end_pt, other.start_pt).length,
+                                 Line(self.start_pt, other.end_pt).length,
+                                 Line(self.end_pt, other.end_pt).length)  # two continuous segments
+                return result
+        else:
+            normal = np.cross(self.direction, other.direction)
+            normal = [item/La.norm(normal) for item in normal]
+            temp_line = Line(self.start_pt, other.ptStart)
+            result = temp_line.length * np.dot(temp_line.direction, normal)
+            result = np.absolute(result)  # the cos could be negative
+            return result
+
+    def is_skewed_from(self, other):
+        """Quick test to see if two lines are skew from each other"""
+        ## forget the intercept case here!!!
+        return not self.is_parallel(other)
 
     def getIntercept(self, other):
         """
         return the intercept point by the other line
         """
         assert isinstance(other, Line)
-        if self.isParallel(other):
+        if self.is_parallel(other):
             # parallel lines do not intercept
             intercept = None
-        elif self.containsPoint(other.ptStart):
+        elif self.contain_point(other.ptStart):
             # the intercept is the start point
             intercept = other.ptStart
-        elif self.containsPoint(other.ptEnd):
+        elif self.contain_point(other.ptEnd):
             # the intercept is the end point
             intercept = other.ptEnd
-        elif self.isSkewedFrom(other):
+        elif self.is_skewed_from(other):
             # two lines are skewed
             intercept = None
         else:
@@ -282,13 +265,13 @@ class Line:
             Vector = np.array([C.x - A.x, C.y - A.y, C.z - A.z])
             Vector = np.dot(Matrix.T, Vector)
             Matrix = np.dot(Matrix.T, Matrix)
-            results = LA.solve(Matrix, Vector)
+            results = La.solve(Matrix, Vector)
             x = A.x + (B.x - A.x) * results[0]
             y = A.y + (B.y - A.y) * results[0]
             z = A.z + (B.z - A.z) * results[0]
             test = Point(float(x), float(y), float(z))
             # make sure the intercept point is on both lines
-            if self.containsPoint(test) & other.containsPoint(test):
+            if self.contain_point(test) & other.contain_point(test):
                 intercept = test
             else:
                 # the intercept point is beyond two line
@@ -342,7 +325,7 @@ class Line2D:
         """
         temp_direc = [self.ptEnd.x - self.ptStart.x,
                       self.ptEnd.y - self.ptStart.y]
-        direc = [float(item)/LA.norm(temp_direc) for item in temp_direc]
+        direc = [float(item)/La.norm(temp_direc) for item in temp_direc]
         return direc
 
     def getLength(self):
@@ -369,7 +352,7 @@ class Line2D:
                                [B.y - A.y, A.x - B.x]])
             vector = np.array([[(D.y - C.y) * C.x - (D.x - C.x) * C.y],
                                [(B.y - A.y) * A.x - (B.x - A.x) * A.y]])
-            results = LA.solve(Matrix, vector)
+            results = La.solve(Matrix, vector)
             test = Point2D(results[0], results[1])
             if self.containsPoint(test) & other.containsPoint(test):
                 intercept = test
@@ -392,7 +375,7 @@ class Line2D:
         test_val = np.dot(self.getDirection(), other.getDirection())
         return (1 - np.absolute(test_val)) < 1e-6
 
-    def containsPoint(self, point):
+    def contain_point(self, point):
         """
         quick check if a point lies on the current line
         """
@@ -641,7 +624,7 @@ class Polygon2D:
         ##
         # First test if the point happens to be on the edges
         for edge in self.getEdges():
-            if edge.containsPoint(point):
+            if edge.contain_point(point):
                 return True
         ##
         # now start with other settings

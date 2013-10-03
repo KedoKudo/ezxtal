@@ -30,10 +30,8 @@
       <file leaf-file-name="Math.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Math.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="52" selection-start="2047" selection-end="2047" vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="1650">
-              <folding>
-                <marker date="1380722919000" expanded="true" signature="195:2174" placeholder="..." />
-              </folding>
+            <state line="69" column="52" selection-start="2047" selection-end="2047" vertical-scroll-proportion="0.0" vertical-offset="876" max-vertical-offset="1650">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -41,11 +39,21 @@
       <file leaf-file-name="Geometry.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Geometry.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="143" column="11" selection-start="3357" selection-end="3357" vertical-scroll-proportion="0.71705425" vertical-offset="555" max-vertical-offset="10680">
+            <state line="228" column="65" selection-start="7450" selection-end="7450" vertical-scroll-proportion="0.4651163" vertical-offset="1920" max-vertical-offset="9525">
               <folding>
                 <element signature="e#276#286#0" expanded="true" />
-                <element signature="e#351#2099#0" expanded="false" />
+                <element signature="e#359#2134#0" expanded="false" />
+                <element signature="e#2163#2334#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Orientation.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Orientation.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="8" column="25" selection-start="168" selection-end="168" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3555">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -69,8 +77,8 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/__init__.py" />
-        <option value="$PROJECT_DIR$/Orientation.py" />
         <option value="$PROJECT_DIR$/Math.py" />
+        <option value="$PROJECT_DIR$/Orientation.py" />
         <option value="$PROJECT_DIR$/Geometry.py" />
       </list>
     </option>
@@ -336,7 +344,15 @@
       <created>1380725147276</created>
       <updated>1380725147276</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="update 2D Point class with new style class">
+      <created>1380725683164</created>
+      <updated>1380725683164</updated>
+    </task>
+    <task id="LOCAL-00005" summary="use inheritance to define Point2D to avoid code doubling.">
+      <created>1380730552643</created>
+      <updated>1380730552643</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -374,7 +390,9 @@
     <MESSAGE value="added multi-dimension vector class" />
     <MESSAGE value="Use new class style, fix one typo" />
     <MESSAGE value="update Point class with new style class" />
-    <option name="LAST_COMMIT_MESSAGE" value="update Point class with new style class" />
+    <MESSAGE value="update 2D Point class with new style class" />
+    <MESSAGE value="use inheritance to define Point2D to avoid code doubling." />
+    <option name="LAST_COMMIT_MESSAGE" value="use inheritance to define Point2D to avoid code doubling." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -383,18 +401,14 @@
     <entry file="file://$PROJECT_DIR$/Math.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="11" selection-start="896" selection-end="896" vertical-scroll-proportion="0.0" vertical-offset="555" max-vertical-offset="645">
-          <folding>
-            <marker date="1380722919000" expanded="true" signature="195:2174" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Math.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="11" selection-start="896" selection-end="896" vertical-scroll-proportion="0.0" vertical-offset="555" max-vertical-offset="645">
-          <folding>
-            <marker date="1380722919000" expanded="true" signature="195:2174" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -406,9 +420,7 @@
     <entry file="file://$PROJECT_DIR$/Math.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="11" selection-start="896" selection-end="896" vertical-scroll-proportion="0.0" vertical-offset="555" max-vertical-offset="645">
-          <folding>
-            <marker date="1380722919000" expanded="true" signature="195:2174" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -425,20 +437,13 @@
     <entry file="file://$PROJECT_DIR$/Math.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="11" selection-start="896" selection-end="896" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <folding>
-            <marker date="1380722919000" expanded="true" signature="195:2174" placeholder="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="14" column="26" selection-start="359" selection-end="359" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Orientation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="171" column="27" selection-start="6028" selection-end="6028" vertical-scroll-proportion="3.7554905" vertical-offset="0" max-vertical-offset="3555" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/__init__.py">
@@ -460,21 +465,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Orientation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="25" selection-start="168" selection-end="168" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3555">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Math.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="52" selection-start="2047" selection-end="2047" vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="1650">
-          <folding>
-            <marker date="1380722919000" expanded="true" signature="195:2174" placeholder="..." />
-          </folding>
+        <state line="69" column="52" selection-start="2047" selection-end="2047" vertical-scroll-proportion="0.0" vertical-offset="876" max-vertical-offset="1650">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Geometry.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="143" column="11" selection-start="3357" selection-end="3357" vertical-scroll-proportion="0.71705425" vertical-offset="555" max-vertical-offset="10680">
+        <state line="228" column="65" selection-start="7450" selection-end="7450" vertical-scroll-proportion="0.4651163" vertical-offset="1920" max-vertical-offset="9525">
           <folding>
             <element signature="e#276#286#0" expanded="true" />
-            <element signature="e#351#2099#0" expanded="false" />
+            <element signature="e#359#2134#0" expanded="false" />
+            <element signature="e#2163#2334#0" expanded="false" />
           </folding>
         </state>
       </provider>
