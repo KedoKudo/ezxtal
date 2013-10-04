@@ -77,16 +77,30 @@ class Point(object):
     def __len__(self):
         return 3
 
-    def distance(self, other):
+    def dist2point(self, other):
         """Return the distance to another point"""
         assert isinstance(other, Point)
         distance = (self.x - other.x)**2 + (self.y - other.y)**2 + (self.z - other.z)**2
         return np.sqrt(distance)
 
-    def is_online(self, line):
+    def dist2line(self, line):
+        """Return the distance to another line"""
+        return line.dist2point(self)
+
+    def dist2pane(self, plane):
+        """Return the distance from a point to given plane"""
+        print "Not implemented yet"
+        pass
+
+    def on_line(self, line):
         """Quick test is the point is on the given line"""
         assert isinstance(line, Line)
         return line.contain_point(self)
+
+    def in_plane(self, plane):
+        """Quick test if a point is in a given plane"""
+        print "Not implemented yet"
+        pass
 
 
 class Point2D(Point):
@@ -162,12 +176,6 @@ class Line:
     def __ne__(self, other):
         return not self == other
 
-    def is_parallel(self, other):
-        """Test if two Line objects are parallel in space"""
-        if 1 - np.absolute(np.dot(self.direction, other.direction)) < 1e-4:
-            return True
-        return False
-
     def contain_point(self, point):
         """Test is a point is on line"""
         if point == self.start_pt:
@@ -181,124 +189,101 @@ class Line:
                 return True  # when point online, the angle between line1 and line2 should be 180
         return False
 
-    def is_coplanar(self, other):
-        """Quick test if two lines are in the same plane"""
-        if self == other:
-            return True  # special case where two line are the same
-        elif self == -other:
-            return True  # special case where two line are mirrored
-        elif self.is_parallel(other):
-            return True  # Parallel lines are always coplanar
-        else:  # either skew or intercept
-            if self.contain_point(other.start_pt):
-                return True  # two line intercept, thus coplanar
-            elif self.contain_point(other.end_pt):
-                return True  # two line intercept, thus coplanar
-            else:
-                normal = np.cross(self.direction, other.direction)
-                temp_line = Line(self.start_pt, other.start_pt)
-                if np.absolute(normal, temp_line) < 1e-4:
-                    return True
+    def parallel_to(self, other):
+        """Test if two Line objects are parallel in space"""
+        if 1 - np.absolute(np.dot(self.direction, other.direction)) < 1e-4:
+            return True
         return False
 
-    def dist2line(self, other):
-        """Return the distance between two line is two lines are skew/parallel"""
-        # NOTE: what will happen if two line intercept outside lines
-        if self == other or self == -other:
-            return 0.0  # special case where two line are the same/mirror
-        elif self.is_parallel(other):
-            if self.contain_point(other.start_pt) or self.contain_point(other.end_pt):
-                return 0.0  # two lines overlapped
-            else:
-                temp_line = Line(self.start_pt, other.start_pt)
-                plane_normal = np.cross(temp_line.direction, self.direction)
-                plane_normal = [item/La.norm(plane_normal) for item in plane_normal]
-                common_normal = np.cross(plane_normal, self.direction)
-                result = temp_line.length * np.dot(common_normal, temp_line.direction)
-                result = np.absolute(result)  # the cos could be negative
-                if result < 1e-4:
-                    result = min(Line(self.start_pt, other.start_pt).length,
-                                 Line(self.end_pt, other.start_pt).length,
-                                 Line(self.start_pt, other.end_pt).length,
-                                 Line(self.end_pt, other.end_pt).length)  # two continuous segments
-                return result
+    def skewed_from(self, other):
+        """Quick test if one line is skewed from the other"""
+        if self.parallel_to(other):
+            return False
+        elif self.contain_point(other.start_pt) or self.contain_point(other.end_pt):
+            return False  # intercepted at the end point
         else:
             normal = np.cross(self.direction, other.direction)
             normal = [item/La.norm(normal) for item in normal]
-            temp_line = Line(self.start_pt, other.ptStart)
-            result = temp_line.length * np.dot(temp_line.direction, normal)
-            result = np.absolute(result)  # the cos could be negative
-            return result
+            test_line = Line(self.start_pt, other.start_pt)
+            if np.absolute(np.dot(normal, test_line.direction)) < 1e-4:
+                return False  # two lines are coplanar
+            else:
+                return True
 
-    def is_skewed_from(self, other):
-        """Quick test to see if two lines are skew from each other"""
-        return not self.is_coplanar(other)
+    def intercepted_by(self, other):
+        """Quick test if one line is intercepted by another"""
+        return not self.get_intercept(other) is None
 
     def get_intercept(self, other):
-        """Return the intercept point by the other line"""
-        # NOTE: current cannot work on the overlapping lines
-        if self.is_skewed_from(other):
-            return None  # skewed lines do not have intercept
+        """Return the intercept point is exist, or return None"""
+        if self.parallel_to(other) or self.skewed_from(other):
+            return None
         elif self.contain_point(other.start_pt):
             return other.start_pt
         elif self.contain_point(other.end_pt):
             return other.end_pt
-        elif self.is_parallel(other):
-            return None  # parallel lines do not intercept
         else:
-            pass
-        '''
-        if self.is_parallel(other):
-            # parallel lines do not intercept
-            intercept = None
-        elif self.contain_point(other.ptStart):
-            # the intercept is the start point
-            intercept = other.ptStart
-        elif self.contain_point(other.ptEnd):
-            # the intercept is the end point
-            intercept = other.ptEnd
-        elif self.is_skewed_from(other):
-            # two lines are skewed
-            intercept = None
-        else:
-            # this is not the right way to calculate the intercept, try
-            # something else...
-            # two line intercept
-            A = Point(self.ptStart.x, self.ptStart.y, self.ptStart.z)
-            B = Point(self.ptEnd.x, self.ptEnd.y, self.ptEnd.z)
-            C = Point(other.ptStart.x, other.ptStart.y, other.ptStart.z)
-            D = Point(other.ptEnd.x, other.ptEnd.y, other.ptEnd.z)
-            Matrix = np.array([[B.x - A.x, C.x - D.x],
-                               [B.y - A.y, C.y - D.y],
-                               [B.z - A.z, C.z - D.z]])
-            Vector = np.array([C.x - A.x, C.y - A.y, C.z - A.z])
-            Vector = np.dot(Matrix.T, Vector)
-            Matrix = np.dot(Matrix.T, Matrix)
-            results = La.solve(Matrix, Vector)
-            x = A.x + (B.x - A.x) * results[0]
-            y = A.y + (B.y - A.y) * results[0]
-            z = A.z + (B.z - A.z) * results[0]
-            test = Point(float(x), float(y), float(z))
-            # make sure the intercept point is on both lines
-            if self.contain_point(test) & other.contain_point(test):
-                intercept = test
+            pt_a = self.start_pt
+            pt_b = self.end_pt
+            pt_c = other.start_pt
+            pt_d = other.end_pt
+            matrix = np.array([[pt_b.x - pt_a.x, pt_c.x - pt_d.x],
+                               [pt_b.y - pt_a.y, pt_c.y - pt_d.y],
+                               [pt_b.z - pt_a.z, pt_c.z - pt_d.z]])
+            vector = np.array([pt_c.x - pt_a.x, pt_c.y - pt_a.y, pt_c.z - pt_a.z])
+            co_vector = np.dot(matrix.T, vector)
+            co_matrix = np.dot(matrix.T, matrix)  # use least-square to solve a overdetermined situation
+            results = La.solve(co_matrix, co_vector)
+            temp_pt = Point(pt_a.x + (pt_b.x - pt_a.x)*results[0],
+                            pt_a.y + (pt_b.y - pt_a.y)*results[0],
+                            pt_a.z + (pt_b.z - pt_a.z)*results[0])
+            if self.contain_point(temp_pt) and other.contain_point(temp_pt):
+                return temp_pt
             else:
-                # the intercept point is beyond two line
-                intercept = None
-        return intercept
-        '''
+                return None
 
-    def is_intercepted(self, other):
-        """Quick test whether intercepted by another line"""
-        if self.is_skewed_from(other):
-            return False
+    def dist2point(self, point):
+        """Return the distance to a given point"""
+        if self.contain_point(point):
+            return 0.0
         else:
-            if self.is_parallel(other):
-                return False
-            else:
-                if self.dist2line(other) > 1e-4:
+            temp_line = Line(point, self.start_pt)
+            # find the normal of the plane defined by the point and line
+            plane_normal = np.cross(temp_line.direction, self.direction)
+            plane_normal = [item/La.norm(plane_normal) for item in plane_normal]
+            direction = np.cross(self.direction, plane_normal)
+            direction = [item/La.norm(direction) for item in direction]
+            result = temp_line.length * np.dot(temp_line.direction, direction)
+            return np.absolute(result)
 
-        return self.get_intercept(other) is not None
+    def dist2line(self, other):
+        """Return the distance between two skewed or parallel lines"""
+        if self.parallel_to(other):
+            if self.contain_point(other.start_pt) or self.contain_point(other.end_pt):
+                return 0.0  # two line collide
+            else:
+                return self.dist2point(other.start_pt)
+        elif self.skewed_from(other):
+            normal = np.cross(self.direction, other.direction)
+            normal = [item/La.norm(normal) for item in normal]
+            test_line = Line(self.start_pt, other.start_pt)
+            result = test_line.length * np.dot(test_line.direction, normal)
+            return np.absolute(result)
+        else:
+            return 0.0
+
+    def dist2plane(self, plane):
+        """Return the distance to a given plane"""
+        print "Dummy procedure only, will be implemented later"
+
+    def angle2line(self, other):
+        """Return angle (in degree) to another line"""
+        angle = np.arccos(np.dot(self.direction, other.direction)) * 180 / np.pi
+        return angle
+
+    def angle2plane(self, plane):
+        """Return angle to a given plane"""
+        print "Dummy procedure only, will be implemented later"
 
 
 class Line2D:
