@@ -5,13 +5,10 @@ __author__ = "KenZ"
 
 #__Developer Note:
 #  Define common geometry for model construction, including:
-#       Point(3D), Point(2D), Line(3D), Line(2D), Plane
-#       Polygon(3D), Polygon(2D)
-#__TODO:
-#       Only skeleton for plane and polygon class
+#       Point(3D), Point(2D), Line(3D), Line(2D), Plane, Polygon(2D)
 #
 
-import sys
+
 import numpy as np
 import numpy.linalg as La
 
@@ -99,8 +96,7 @@ class Point(object):
 
     def in_plane(self, plane):
         """Quick test if a point is in a given plane"""
-        print "Not implemented yet"
-        pass
+        return plane.contain_point(self)
 
 
 class Point2D(Point):
@@ -112,7 +108,7 @@ class Point2D(Point):
         return 2
 
 
-class Line:
+class Line(object):
     """Line in 3D space"""
     def __init__(self, pt_start, pt_end):
         """Initialize a line with 2 point in 3D space"""
@@ -286,286 +282,134 @@ class Line:
         print "Dummy procedure only, will be implemented later"
 
 
-class Line2D:
-    """
-    2D line class for planar analysis
-    """
-    def __init__(self, ptStart, ptEnd):
-        """
-        using two 2D point to define a 2D line
-        """
-        assert isinstance(ptStart, Point2D)
-        assert isinstance(ptEnd, Point2D)
-        if ptStart == ptEnd:
-            print "ERROR, need two point to define a line"
-            sys.exit(-1)
-        else:
-            self.ptStart = ptStart
-            self.ptEnd = ptEnd
-
-    def __eq__(self, other):
-        """
-        lines have the same starting and ending point can be consider the same line
-        """
-        assert isinstance(other, Line2D)
-        return self.ptStart == other.ptStart and self.ptEnd == other.ptEnd
+class Line2D(Line):
+    """2D line class for planar analysis"""
+    def __init__(self, pt_start, pt_end):
+        """Using two 2D point to define a 2D line"""
+        super(Line2D, self).__init__(pt_start, pt_end)
 
     def __str__(self):
-        outString = "2D Line:\n"
-        outString += "Start at: ({}, {})\n".format(self.ptStart.x,
-                                                   self.ptStart.y)
-        outString += "End at: ({}, {})\n".format(self.ptEnd.x,
-                                                 self.ptEnd.y)
-        outString += "Line direction: <{}, {}>".format(self.getDirection()[0],
-                                                       self.getDirection()[1])
-        return outString
+        """Return formatted string output"""
+        out_string = "(" + str(self.start_pt.x) + ", " + str(self.start_pt.y) + ")"
+        out_string += "-->"
+        out_string += "(" + str(self.end_pt.x) + ", " + str(self.end_pt.y) + ")"
+        return out_string
 
-    def getDirection(self):
-        """
-        return a unit vector defining line direction
-        """
-        temp_direc = [self.ptEnd.x - self.ptStart.x,
-                      self.ptEnd.y - self.ptStart.y]
-        direc = [float(item)/La.norm(temp_direc) for item in temp_direc]
-        return direc
+    @property
+    def direction(self):
+        temp_vector = [self.end_pt.x - self.start_pt.x,
+                       self.end_pt.y - self.end_pt.y]
+        temp_vector = [item/La.norm(temp_vector) for item in temp_vector]
+        return temp_vector
 
-    def getLength(self):
-        """
-        return the length of line
-        """
-        temp_val = (self.ptEnd.x - self.ptStart.x) ** 2
-        temp_val += (self.ptEnd.y - self.ptStart.y) ** 2
-        return np.sqrt(temp_val)
-
-    def getIntercept(self, other):
-        """
-        return the intercept point of two 2D lines
-        """
-        assert isinstance(other, Line2D)
-        if self.isParallel(other):
-            intercept = None
+    def get_intercept(self, other):
+        """Return the intercept of two lines"""
+        if self.parallel_to(other):
+            return None
+        elif self.contain_point(other.start_pt):
+            return other.start_pt
+        elif self.contain_point(other.end_pt):
+            return other.end_pt
         else:
-            A = self.ptStart
-            B = self.ptEnd
-            C = other.ptStart
-            D = other.ptEnd
-            Matrix = np.array([[D.y - C.y, C.x - D.x],
-                               [B.y - A.y, A.x - B.x]])
-            vector = np.array([[(D.y - C.y) * C.x - (D.x - C.x) * C.y],
-                               [(B.y - A.y) * A.x - (B.x - A.x) * A.y]])
-            results = La.solve(Matrix, vector)
-            test = Point2D(results[0], results[1])
-            if self.containsPoint(test) & other.containsPoint(test):
-                intercept = test
+            pt_a = self.start_pt
+            pt_b = self.end_pt
+            pt_c = other.start_pt
+            pt_d = other.end_pt
+            matrix = np.array([[pt_b.x - pt_a.x, pt_c.x - pt_d.x],
+                               [pt_b.y - pt_a.y, pt_c.y - pt_d.y]])
+            vector = np.array([pt_c.x - pt_a.x, pt_c.y - pt_a.y])
+            results = La.solve(matrix, vector)
+            temp_pt = Point2D(pt_a.x + (pt_b.x - pt_a.x)*results[0],
+                              pt_a.y + (pt_b.y - pt_a.y)*results[0],)
+            if self.contain_point(temp_pt) and other.contain_point(temp_pt):
+                return temp_pt
             else:
-                intercept = None
-        return intercept
+                return None
 
-    def isIntercepted(self, other):
-        """
-        quick check is two lines intercept each other
-        """
-        assert isinstance(other, Line2D)
-        return self.getIntercept(other) is not None
+    def skewed_from(self, other):
+        """2D lines do not skew from each other"""
+        return None
 
-    def isParallel(self, other):
-        """
-        quick check if two lines are parallel to each other
-        """
-        assert isinstance(other, Line2D)
-        test_val = np.dot(self.getDirection(), other.getDirection())
-        return (1 - np.absolute(test_val)) < 1e-6
+
+class Plane(object):
+    """Plane with no shape"""
+    def __init__(self, point1, point2, point3):
+        """Initialize a plane with 3 points"""
+        # test if 3 points are on the same line
+        if Line(point1, point2).parallel_to(Line(point2, point3)):
+            raise ValueError("3 points are colinear ")
+        self._point = [point1, point2, point3]
+
+    @property
+    def normal(self):
+        """Plane normal"""
+        normal = np.cross(Line(self._point[0], self._point[1]).direction,
+                          Line(self._point[1], self._point[2]).direction)
+        normal = [item/La.norm(normal) for item in normal]
+        return normal
+
+    def __str__(self):
+        out_string = "{}(x - {}) + {}(y - {}) + {}(z - {}) = 0".format(self.normal[0], self._point[0].x,
+                                                                       self.normal[1], self._point[0].y,
+                                                                       self.normal[2], self._point[0].z)
+        return out_string
+
+    def __eq__(self, other):
+        if 1 - np.absolute(np.dot(self.normal, other.normal)) < 1e-4:
+            return other.contain_point(self._point[0])
+        else:
+            return False
 
     def contain_point(self, point):
-        """
-        quick check if a point lies on the current line
-        """
-        assert isinstance(point, Point2D)
-        maxX = max(self.ptStart.x, self.ptEnd.x)
-        minX = min(self.ptStart.x, self.ptEnd.x)
-        maxY = max(self.ptStart.y, self.ptEnd.y)
-        minY = min(self.ptStart.y, self.ptEnd.y)
-        flag = False
-        if minX == maxX == point.x:
-            if minY <= point.y <= maxY:
-                return True
-        if minY == maxY == point.y:
-            if minX <= point.x <= maxX:
-                return True
-        if minX <= point.x <= maxX:
-            if minY <= point.y <= maxY:
-                slope = (self.ptEnd.y - self.ptStart.y) / (self.ptEnd.x - self.ptStart.x)
-                test = point.y - self.ptStart.y - slope * (point.x - self.ptStart.x)
-                if np.absolute(test) < 1e-6:
-                    flag = True
-        return flag
-
-    def dist2Line(self, other):
-        """
-        return the distance between two lines
-        """
-        assert isinstance(other, Line2D)
-        if self.isParallel(other):
-            # have non-zero distance
-            # the normal direction of <x, y> should be <-y, x>
-            normal = [-self.getDirection()[1], self.getDirection()[0]]
-            temp_line = Line2D(self.ptStart, other.ptStart)
-            distance = temp_line.getLength() * np.dot(normal, temp_line.getDirection())
+        """Quick test to see if a point is in plane"""
+        test_val = [point.x - self._point[0].x, point.y - self._point[0].y, point.z - self._point[0].z]
+        if np.absolute(np.dot(test_val, self.normal)) < 1e-4:
+            return True
         else:
-            # intercepted lines have 0 distance
-            distance = 0
-        return distance
+            return False
 
-    def dist2Point(self, point):
-        """
-        return the distance between a point and the current line
-        """
-        # don't have to worry about on line case as the output will just be 0
-        assert isinstance(point, Point2D)
-        normal = [-self.getDirection()[1], self.getDirection()[0]]
-        temp_line = Line2D(self.ptStart, point)
-        distance = temp_line.getLength() * np.dot(normal, temp_line.getDirection())
-        return distance
+    def contain_line(self, line):
+        """Quick test to see if a line lies in a plane"""
+        return self.contain_point(line.start_pt) and self.contain_point(line.end_pt)
 
-    def getAngle(self, other):
-        """
-        return the angle between two Line2D object.
-        bullet proofed ^0^
-        """
-        ##
-        # Note: Here the Line2D is treated as vector, thus the angle between two Line2D objects ranges from 0 to 2pi
-        assert isinstance(other, Line2D)
-        sin_val = np.cross(other.getDirection(), self.getDirection())
-        cos_val = np.dot(other.getDirection(), self.getDirection())
-        if sin_val >= 0.0:
-            return np.arccos(cos_val)
-        elif (sin_val < 0.0) & (cos_val < 0.0):
-            return np.pi + np.arctan(sin_val/cos_val)
-        elif (sin_val < 0.0) & (cos_val == 0.0):
-            return 1.5*np.pi
+    def parallel_to(self, other):
+        """Quick test if two planes are parallel to each other"""
+        if 1 - np.absolute(np.dot(self.normal, other.normal)) < 1e-4:
+            return True
         else:
-            return 2*np.pi + np.arctan(sin_val/cos_val)
-
-    def getAngleD(self, other):
-        """
-        return the angle between 2 Line2D object in degrees
-        """
-        assert isinstance(other, Line2D)
-        angle = self.getAngle(other)
-        return angle * 180 / np.pi
+            return False
 
 
-class Plane:
-    """
-    plane with no shape
-    """
+class Polygon2D(object):
+    """polygon for 2D analysis"""
     def __init__(self):
-        pass
-
-    def __str__(self):
-        outString = ""
-        return outString
-
-    def __eq__(self, other):
-        assert isinstance(other, Plane)
-        flag = False
-        return flag
-
-    def getNormal(self):
-        """
-        return the unit vector of the plane normal as a tuple
-        """
-        normal = None
-        return tuple(normal)
-
-    def containPoint(self, point):
-        """
-        quick test to see if a point is in plane
-        """
-        assert isinstance(point, Point)
-        flag = False
-        return flag
-
-    def containLine(self, line):
-        """
-        quick test to see if a line lies in a plane
-        """
-        assert isinstance(line, Line)
-        flag = False
-        return flag
-
-    def isParallel(self, other):
-        """
-        quick test if two planes are parallel to each other
-        """
-        assert isinstance(other, Plane)
-        pass
-
-    def isIntercepted(self, other):
-        """
-        quick check if two planes intercept each other
-        """
-        assert isinstance(other, Plane)
-        pass
-
-    def getIntercept(self, other):
-        """
-        return the intercept line of two planes
-        """
-        assert isinstance(other, Plane)
-        pass
-
-
-class Polygon:
-    """
-    several coplanar lines connect to create a polygon in space
-    """
-    pass
-
-
-class Polygon2D:
-    """
-    polygon for 2D analysis
-    """
-    def __init__(self):
-        """
-        empty vertex list
-        """
+        """Initialize a 2D polygon with empty vertices list"""
         self.__vertices = []
         self.__edges = []
 
     def __str__(self):
-        outString = "Polygon Object:\n"
-        outString += "total number of vertices: {}\n".format(len(self.__vertices))
-        outString += "total number of edges: {}".format(len(self.__vertices))
-        return outString
+        """Formatted output for 2D polygon"""
+        return "2D {}-Polygon".format(len(self.__edges))
 
-    def __len__(self):
-        """
-        return the number of vertices/edges for current polygon
-        """
-        return len(self.__vertices)
+    @property
+    def edges(self):
+        self.__update()  # use lazy-evaluation, only update when required
+        return self.__edges
 
-    def addVertex(self, point):
-        """
-        add one more vertex to the current Polygon
-        The vertices list is sorted in a different place
-        """
-        assert isinstance(point, Point2D)
-        # prevent duplicate points
+    @property
+    def vertices(self):
+        self.__update()  # use lazy-evaluation, only update when required
+        return self.__vertices
+
+    def add_vertex(self, point):
+        """Add one more vertex to the current Polygon"""
         if point in self.__vertices:
-            print "Duplicate vertex: {}".format(point)
-            # do not add duplicate vertex
-            return 0
+            print "Duplicate vertex: {}".format(point)  # prevent duplicate vertex
         else:
-            # whenever a new vertex is added, the shape of the polygon will change, thus the center will move around
-            # and the order of the vertices need to be recalculated
             self.__vertices.append(point)
-            self.__update()
 
     def __update(self):
-        """
-        this function is called to ensure a reasonable and sorted list of vertices exist for each polygon2D instance
+        """This function is called to ensure a reasonable and sorted list of vertices exist for each polygon2D instance
         when a new vertex is added to the collection
         """
         ##
@@ -660,47 +504,10 @@ class Polygon2D:
         center_y /= len(self.__vertices)
         return Point2D(center_x, center_y)
 
-    def getEdges(self):
-        """
-        return a list of edges associated with the current polygon2D
-        """
-        return self.__edges
-
-    def getVertices(self):
-        """
-        return a list of sorted vertices
-        """
-        return self.__vertices
-
 
 def Debug():
-    """
-    module debug session
-    """
+    """Module debug session"""
     print "Module test begins:"
-    import matplotlib.pyplot as plt
-    p0 = Point2D(0.0, 0.0)
-    p1 = Point2D(1.0, 1.0)
-    p2 = Point2D(0.0, 1.0)
-    p3 = Point2D(1.0, 0.0)
-    p4 = Point2D(1.5, 0.5)
-    p5 = Point2D(-1.5, 0.5)
-    testPoint = Point2D(0.0, 0.3)
-    polygon = Polygon2D()
-    polygon.addVertex(p0)
-    polygon.addVertex(p1)
-    polygon.addVertex(p2)
-    polygon.addVertex(p3)
-    polygon.addVertex(p4)
-    polygon.addVertex(p5)
-    rayO = Point2D(-5, -5)
-    print "Contains {}: {}".format(testPoint, polygon.containsPoint(testPoint, rayOrigin=rayO))
-    for edge in polygon.getEdges():
-        plt.plot(testPoint.x, testPoint.y, 'ro')
-        plt.plot([edge.ptStart.x, edge.ptEnd.x],
-                 [edge.ptStart.y, edge.ptEnd.y],
-                 'k-')
-    plt.show()
 
 if __name__ == "__main__":
     Debug()
