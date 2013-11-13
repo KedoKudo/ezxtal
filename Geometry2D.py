@@ -86,20 +86,28 @@ class Polygon2D(object):
     def __init__(self):
         """Initialize a 2D polygon with empty vertices list"""
         self.__vertices = []
-        self.__edges = []
+        self.__ordered = False
 
     def __str__(self):
         """Formatted output for 2D polygon"""
-        return "2D {}-Polygon".format(len(self.__edges))
+        return "2D {}-Polygon".format(len(self.__vertices))
 
     @property
     def edges(self):
-        self.__update()  # use lazy-evaluation, only update when required
-        return self.__edges
+        if not self.__ordered:
+            self.__update()  # use lazy-evaluation, only update when needed
+        ##
+        # compute edge list
+        edge_list = []
+        for i in range(len(self.__vertices) - 1):
+            edge_list.append(Line2D(self.__vertices[i], self.__vertices[i+1]))
+        edge_list.append(Line2D(self.__vertices[-1], self.__vertices[0]))
+        return edge_list
 
     @property
     def vertices(self):
-        self.__update()  # use lazy-evaluation, only update when required
+        if not self.__ordered:
+            self.__update()  # use lazy-evaluation, only update when needed
         return self.__vertices
 
     @property
@@ -116,51 +124,19 @@ class Polygon2D(object):
 
     def add_vertex(self, point):
         """Add one more vertex to the current Polygon"""
-        if point in self.__vertices:
-            print "Duplicate vertex: {}".format(point)  # prevent duplicate vertex
-        else:
-            self.__vertices.append(point)
+        self.__vertices.append(point)
+        self.__ordered = False
 
     def __update(self):
-        """
-        This function is called to ensure a reasonable and sorted list of vertices exist for each polygon2D instance
-        when a new vertex is added to the collection
-        """
+        point_list = []
+        for vertex in self.__vertices:
+            point_list.append((vertex.x, vertex.y))
         ##
-        # Note: This is the major part of this class as it is responsible for a reasonable internal data structure of
-        #       the polygon in 2D case. Here all vertices will be sorted and stored in a counter-clock direction so that
-        #       the connectivity can be easily obtained.
-        #       The average center is used to sort the list and order of efficiency is very bad here
-        if len(self.__vertices) < 2:
-            # empty polygon or single point. No action need
-            self.__edges = []
-        elif len(self.__vertices) == 2:
-            # a new line can be defined here
-            temp_line = Line2D(self.__vertices[0], self.__vertices[1])
-            self.__edges = [temp_line]
-        else:
-            # a polygon can be formed now, use the average center as a reference and try to sort the vertex in the list
-            # with a counter-clock wise order
-            center = self.center  # get the most updated center point
-            ##
-            # Note: reorder the vertex w.r.t to the newly inserted vertex, i.e. the newly inserted vertex will serve as
-            #       the reference pole here.
-            new_list = [self.__vertices[-1]]
-            ref_line = Line2D(center, new_list[0])
-            vertex_dict = {}
-            for vertex in self.__vertices[:-1]:
-                temp_line = Line2D(center, vertex)
-                angle = temp_line.angle2line(ref_line)
-                vertex_dict[angle] = vertex
-            for key in sorted(vertex_dict.iterkeys()):
-                new_list.append(vertex_dict[key])
-            # now that the list is fully sorted, construct the edge list
-            self.__vertices = new_list
-            self.__edges = []
-            for index in range(len(self.__vertices)-1):
-                self.__edges.append(Line2D(self.__vertices[index],
-                                           self.__vertices[index+1]))
-            self.__edges.append(Line2D(self.__vertices[-1], self.__vertices[0]))
+        # build an ordered vertices list use convex_hull method
+        self.__vertices = []
+        for point in convex_hull(point_list):
+            self.__vertices.append(Point2D(point[0], point[1]))
+        self.__ordered = True
 
     def get_shortest(self):
         """return the shortest distance between the center and vertices"""
@@ -173,10 +149,7 @@ class Polygon2D(object):
         return dist
 
     def contains_point(self, point, ray_origin=None):
-        """
-        quick test if a Point2D instance is inside the polygon.
-        use a outside point for testing
-        """
+        """quick test if a Point2D instance is inside the polygon."""
         assert isinstance(point, Point2D)
         ##
         # First test if the point happens to be on the edges
@@ -204,6 +177,47 @@ class Polygon2D(object):
             return True
 
 
+def convex_hull(point_list):
+    """Computes the convex hull of a set of 2D points.
+
+    Input: an iterable sequence of (x, y) pairs representing the points.
+    Output: a list of vertices of the convex hull in counter-clockwise order,
+      starting from the vertex with the lexicographically smallest coordinates.
+    Implements Andrew's monotone chain algorithm. O(n log n) complexity.
+    """
+    # Sort the points lexicographically (tuples are compared lexicographically).
+    # Remove duplicates to detect the case we have just one unique point.
+    points = sorted(set(point_list))
+
+    # Boring case: no points or a single point, possibly repeated multiple times.
+    if len(points) <= 1:
+        return points
+
+    # 2D cross product of OA and OB vectors, i.e. z-component of their 3D cross product.
+    # Returns a positive value, if OAB makes a counter-clockwise turn,
+    # negative for clockwise turn, and zero if the points are collinear.
+    def cross(o, a, b):
+        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+
+    # Build lower hull
+    lower = []
+    for p in points:
+        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
+            lower.pop()
+        lower.append(p)
+
+    # Build upper hull
+    upper = []
+    for p in reversed(points):
+        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
+            upper.pop()
+        upper.append(p)
+
+    # Concatenation of the lower and upper hulls gives the convex hull.
+    # Last point of each list is omitted because it is repeated at the beginning of the other list.
+    return lower[:-1] + upper[:-1]
+
+
 def debug():
     """quick unit test for Gemetry2D module"""
     print "Unit test starts"
@@ -215,7 +229,7 @@ def debug():
         # test for polygon2D
         plt.subplot(211)
         test_polygon = Polygon2D()
-        for i in range(5):
+        for i in range(10):
             temp_pt = Point2D(randint(0, 20), randint(0, 20))
             test_polygon.add_vertex(temp_pt)
         x_list = []
@@ -253,7 +267,7 @@ def debug():
         intercept = temp_line1.get_intercept(temp_line2)
         if temp_line1.intercepted_by(temp_line2):
             plt.plot(intercept.x, intercept.y, "ro")
-            print "intercept is:".format(intercept)
+            print "intercept is: {}".format(intercept)
         ##
         # show results
         plt.show()
