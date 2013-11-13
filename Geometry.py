@@ -6,7 +6,12 @@ __author__ = "KenZ"
 #__Developer Note:
 #  Define common geometry for model construction, including:
 #       Point(3D), Point(2D), Line(3D), Line(2D), Plane, Polygon(2D)
-#
+
+##
+# TODO:
+#   Point: implement dist2plane()
+#   Line:  implement dist2plane()
+#          implement angle2plane()
 
 
 import numpy as np
@@ -84,11 +89,6 @@ class Point(object):
         """Return the distance to another line"""
         return line.dist2point(self)
 
-    def dist2pane(self, plane):
-        """Return the distance from a point to given plane"""
-        print "Not implemented yet"
-        pass
-
     def on_line(self, line):
         """Quick test is the point is on the given line"""
         assert isinstance(line, Line)
@@ -110,6 +110,8 @@ class Point2D(Point):
 
 class Line(object):
     """Line in 3D space"""
+    __slots__ = ["_start", "_end"]  # streamline memory for efficiency
+
     def __init__(self, pt_start, pt_end):
         """Initialize a line with 2 point in 3D space"""
         if pt_start == pt_end:
@@ -268,18 +270,10 @@ class Line(object):
         else:
             return 0.0
 
-    def dist2plane(self, plane):
-        """Return the distance to a given plane"""
-        print "Dummy procedure only, will be implemented later"
-
     def angle2line(self, other):
         """Return angle (in degree) to another line"""
         angle = np.arccos(np.dot(self.direction, other.direction)) * 180 / np.pi
         return angle
-
-    def angle2plane(self, plane):
-        """Return angle to a given plane"""
-        print "Dummy procedure only, will be implemented later"
 
 
 class Line2D(Line):
@@ -328,7 +322,7 @@ class Line2D(Line):
 
     def skewed_from(self, other):
         """2D lines do not skew from each other"""
-        return None
+        raise TypeError("2D line do not skew from each other")
 
 
 class Plane(object):
