@@ -1,10 +1,10 @@
 __author__ = 'Kirito'
 
-from Geometry import Point
-from Geometry import Point2D
-from Geometry import Line
-from Geometry import Line2D
-from Geometry import Polygon2D
+from Geometry3D import Point
+from Geometry3D import Line
+
+from Geometry2D import Line2D
+from Geometry2D import Polygon2D
 
 from Orientation import EulerAngle
 from Orientation import RotationMatrix

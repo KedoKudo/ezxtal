@@ -4,15 +4,11 @@ __author__ = "KenZ"
 
 
 #__Developer Note:
-#  Define common geometry for model construction, including:
-#       Point(3D), Point(2D), Line(3D), Line(2D), Plane, Polygon(2D)
+#  Common geometry shape in 3D
 
 ##
 # TODO:
-#   Point: implement dist2plane()
-#   Line:  implement dist2plane()
-#          implement angle2plane()
-
+#   Need further test on the 3D case
 
 import numpy as np
 import numpy.linalg as La
@@ -97,15 +93,6 @@ class Point(object):
     def in_plane(self, plane):
         """Quick test if a point is in a given plane"""
         return plane.contain_point(self)
-
-
-class Point2D(Point):
-    """Point in Plane, derived from the 3D point class"""
-    def __init__(self, x, y):
-        super(Point2D, self).__init__(x, y, 0)
-
-    def __len__(self):
-        return 2
 
 
 class Line(object):
@@ -276,55 +263,6 @@ class Line(object):
         return angle
 
 
-class Line2D(Line):
-    """2D line class for planar analysis"""
-    def __init__(self, pt_start, pt_end):
-        """Using two 2D point to define a 2D line"""
-        super(Line2D, self).__init__(pt_start, pt_end)
-
-    def __str__(self):
-        """Return formatted string output"""
-        out_string = "(" + str(self.start_pt.x) + ", " + str(self.start_pt.y) + ")"
-        out_string += "-->"
-        out_string += "(" + str(self.end_pt.x) + ", " + str(self.end_pt.y) + ")"
-        return out_string
-
-    @property
-    def direction(self):
-        temp_vector = [self.end_pt.x - self.start_pt.x,
-                       self.end_pt.y - self.end_pt.y]
-        temp_vector = [item/La.norm(temp_vector) for item in temp_vector]
-        return temp_vector
-
-    def get_intercept(self, other):
-        """Return the intercept of two lines"""
-        if self.parallel_to(other):
-            return None
-        elif self.contain_point(other.start_pt):
-            return other.start_pt
-        elif self.contain_point(other.end_pt):
-            return other.end_pt
-        else:
-            pt_a = self.start_pt
-            pt_b = self.end_pt
-            pt_c = other.start_pt
-            pt_d = other.end_pt
-            matrix = np.array([[pt_b.x - pt_a.x, pt_c.x - pt_d.x],
-                               [pt_b.y - pt_a.y, pt_c.y - pt_d.y]])
-            vector = np.array([pt_c.x - pt_a.x, pt_c.y - pt_a.y])
-            results = La.solve(matrix, vector)
-            temp_pt = Point2D(pt_a.x + (pt_b.x - pt_a.x)*results[0],
-                              pt_a.y + (pt_b.y - pt_a.y)*results[0],)
-            if self.contain_point(temp_pt) and other.contain_point(temp_pt):
-                return temp_pt
-            else:
-                return None
-
-    def skewed_from(self, other):
-        """2D lines do not skew from each other"""
-        raise TypeError("2D line do not skew from each other")
-
-
 class Plane(object):
     """Plane with no shape"""
     def __init__(self, point1, point2, point3):
@@ -374,134 +312,10 @@ class Plane(object):
             return False
 
 
-class Polygon2D(object):
-    """polygon for 2D analysis"""
-    def __init__(self):
-        """Initialize a 2D polygon with empty vertices list"""
-        self.__vertices = []
-        self.__edges = []
-
-    def __str__(self):
-        """Formatted output for 2D polygon"""
-        return "2D {}-Polygon".format(len(self.__edges))
-
-    @property
-    def edges(self):
-        self.__update()  # use lazy-evaluation, only update when required
-        return self.__edges
-
-    @property
-    def vertices(self):
-        self.__update()  # use lazy-evaluation, only update when required
-        return self.__vertices
-
-    def add_vertex(self, point):
-        """Add one more vertex to the current Polygon"""
-        if point in self.__vertices:
-            print "Duplicate vertex: {}".format(point)  # prevent duplicate vertex
-        else:
-            self.__vertices.append(point)
-
-    def __update(self):
-        """This function is called to ensure a reasonable and sorted list of vertices exist for each polygon2D instance
-        when a new vertex is added to the collection
-        """
-        ##
-        # Note: This is the major part of this class as it is responsible for a reasonable internal data structure of
-        #       the polygon in 2D case. Here all vertices will be sorted and stored in a counter-clock direction so that
-        #       the connectivity can be easily obtained.
-        #       The average center is used to sort the list and order of efficiency is very bad here
-        if len(self.__vertices) < 2:
-            # empty polygon or single point. No action need
-            self.__edges = []
-        elif len(self.__vertices) == 2:
-            # a new line can be defined here
-            temp_line = Line2D(self.__vertices[0], self.__vertices[1])
-            self.__edges = [temp_line]
-        else:
-            # a polygon can be formed now, use the average center as a reference and try to sort the vertex in the list
-            # with a counter-clock wise order
-            center = self.getCenter()  # get the most updated center point
-            ##
-            # Note: reorder the vertex w.r.t to the newly inserted vertex, i.e. the newly inserted vertex will serve as
-            #       the reference pole here.
-            newList = [self.__vertices[-1]]
-            refLine = Line2D(center, newList[0])
-            vertexDict = {}
-            for vertex in self.__vertices[:-1]:
-                tempLine = Line2D(center, vertex)
-                angle = tempLine.getAngleD(refLine)
-                vertexDict[angle] = vertex
-            for key in sorted(vertexDict.iterkeys()):
-                newList.append(vertexDict[key])
-            # now that the list is fully sorted, construct the edge list
-            self.__vertices = newList
-            self.__edges = []
-            for index in range(len(self.__vertices)-1):
-                self.__edges.append(Line2D(self.__vertices[index],
-                                           self.__vertices[index+1]))
-            self.__edges.append(Line2D(self.__vertices[-1], self.__vertices[0]))
-
-    def getShortest(self):
-        """
-        return the shortest distance between the center and vertices
-        """
-        center = self.getCenter()
-        dist = Line2D(center, self.__vertices[-1]).getLength()
-        for vertex in self.__vertices[:-1]:
-            temp = Line2D(center, vertex).getLength()
-            if temp < dist:
-                dist = temp
-        return dist
-
-    def containsPoint(self, point, rayOrigin=None):
-        """
-        quick test if a Point2D instance is inside the polygon.
-        use a outside point for testing
-        """
-        assert isinstance(point, Point2D)
-        ##
-        # First test if the point happens to be on the edges
-        for edge in self.getEdges():
-            if edge.contain_point(point):
-                return True
-        ##
-        # now start with other settings
-        if rayOrigin is None:
-            center = self.getCenter()
-            temp_x = center.x + 10 * (self.__vertices[-1].x - center.x)
-            temp_y = center.y + 10 * (self.__vertices[-1].y - center.y)
-            testPoint = Point2D(temp_x, temp_y)
-            testLine = Line2D(testPoint, point)
-        else:
-            assert isinstance(rayOrigin, Point2D)
-            testLine = Line2D(rayOrigin, point)
-        count = 0
-        for edge in self.getEdges():
-            if edge.is_intercepted(testLine):
-                count += 1
-        if count % 2 == 0:
-            return False
-        else:
-            return True
-
-    def getCenter(self):
-        """
-        return a Point2D class of the geometrical center of the current polygon
-        """
-        center_x = 0.0
-        center_y = 0.0
-        for vertex in self.__vertices:
-            center_x += float(vertex.x)
-            center_y += float(vertex.y)
-        center_x /= len(self.__vertices)
-        center_y /= len(self.__vertices)
-        return Point2D(center_x, center_y)
-
-
-def Debug():
+def debug():
     """Module debug session"""
     print "Module test begins:"
 
+
 if __name__ == "__main__":
-    Debug()
+    debug()
