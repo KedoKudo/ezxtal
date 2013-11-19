@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2a83a358-a53f-4c5b-90f6-dbbe48d04779" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Lattice.py" afterPath="$PROJECT_DIR$/Lattice.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ezxtal.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,22 +26,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Math.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Math.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Math.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="48" column="22" selection-start="1374" selection-end="1374" vertical-scroll-proportion="0.0" vertical-offset="630" max-vertical-offset="1650">
+            <state line="48" column="22" selection-start="1374" selection-end="1374" vertical-scroll-proportion="0.11597938" vertical-offset="630" max-vertical-offset="1650">
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Lattice.py" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Lattice.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="124" column="0" selection-start="4753" selection-end="4753" vertical-scroll-proportion="1.4690722" vertical-offset="720" max-vertical-offset="2010">
-              <folding>
-                <element signature="e#354#384#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -552,19 +540,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Math.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="22" selection-start="1374" selection-end="1374" vertical-scroll-proportion="0.0" vertical-offset="630" max-vertical-offset="1650">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Lattice.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="124" column="0" selection-start="4753" selection-end="4753" vertical-scroll-proportion="1.4690722" vertical-offset="720" max-vertical-offset="2010">
+        <state line="119" column="25" selection-start="4632" selection-end="4632" vertical-scroll-proportion="1.0193299" vertical-offset="994" max-vertical-offset="1980">
           <folding>
             <element signature="e#354#384#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Math.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="22" selection-start="1374" selection-end="1374" vertical-scroll-proportion="0.11597938" vertical-offset="630" max-vertical-offset="1650">
+          <folding />
         </state>
       </provider>
     </entry>

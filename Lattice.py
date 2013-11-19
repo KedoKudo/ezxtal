@@ -106,8 +106,6 @@ class Lattice(object):
 ##
 # set up unit test
 def debug():
-    ##
-    # TODO: Need module test for validation of lattice class
     print "Module test begins"
     a = [1, 0, 0]
     b = [1, 1, 0]
