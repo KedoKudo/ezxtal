@@ -77,8 +77,8 @@ class Vector:
 
 
 def find_angle(sin_val, cos_val):
-        """
-        find angle in radians based on value of sine and cosine
+        """find angle in radians based on value of sine and cosine
+
         :param sin_val: sin(theta)
         :param cos_val: cos(theta)
         """
