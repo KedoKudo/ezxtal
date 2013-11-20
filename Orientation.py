@@ -15,7 +15,8 @@ from Math import levi_civita
 from abc import ABCMeta, abstractproperty
 
 ##
-#TODO: Need class for Quaternion, Rodrigues vector, and a wrapper class for XtalOrientation
+#TODO: Need class for Quaternion
+#TODO: There seems to be some bugs in the Rodrigues class, do not use it until it's fixed.
 #
 
 
@@ -48,7 +49,7 @@ class XtalOrientation(object):
         """ return the rotation axis """
         return "Implemented in subclass"
 
-    @property
+    @abstractproperty
     def rodrigues(self):
         """ return the orientation in the form of Rodrigues vector """
         return "Implemented in subclass"
@@ -146,7 +147,12 @@ class EulerAngle(XtalOrientation):
         rot_m = RotationMatrix(self.rotation_matrix)
         return rot_m.rotation_angle
 
-    #TODO: add conversion to Rodrigues vectors, quaternion
+    @property
+    def rodrigues(self):
+        """ convert Euler angles into Rodrigues vector """
+        return RotationMatrix(self.rotation_matrix).rodrigues
+
+    #TODO: add conversion to quaternion
 
 
 class RotationMatrix(XtalOrientation):
@@ -234,7 +240,17 @@ class RotationMatrix(XtalOrientation):
             angles[2] = phi2 * 180 / np.pi
         return angles
 
-    #TODO: add conversion to Rodrigues vectors, quaternion
+    @property
+    def rodrigues(self):
+        """ convert rotation matrix into Rodrigues vector """
+        scale = -1.0 / (1.0 + sum(sum(self.__r * self.__r)))
+        rodrigues = [0, 0, 0]
+        for i in range(3):
+            rodrigues[i] = scale * sum([sum([levi_civita(i, j, k) * self.__r[j, k] for k in range(3)])
+                                        for j in range(3)])
+        return rodrigues
+
+    #TODO: add conversion to quaternion
 
 
 class Rodrigues(XtalOrientation):
@@ -294,10 +310,12 @@ class Rodrigues(XtalOrientation):
 def debug():
     """ Module debugging """
     print "Module debug begins:"
-    eulerangle_1 = EulerAngle(179, 1, 5)
+    eulerangle_1 = EulerAngle(40, 20, 5)
     print eulerangle_1.rotation_matrix
-    rot_m = RotationMatrix(eulerangle_1.rotation_matrix)
-    print rot_m.euler_angle
+    rodrigues_1 = Rodrigues(eulerangle_1.rodrigues[0],
+                            eulerangle_1.rodrigues[1],
+                            eulerangle_1.rodrigues[2])
+    print rodrigues_1.rotation_matrix  # something is very wrong here, I'll fix it later...
 
 
 if __name__ == "__main__":
