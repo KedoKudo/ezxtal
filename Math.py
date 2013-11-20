@@ -84,14 +84,12 @@ def find_angle(sin_val, cos_val):
         """
         sin_val = float(sin_val)
         cos_val = float(cos_val)
-        if sin_val >= 0.0:
-            theta = np.arccos(cos_val)
-        elif (sin_val < 0.0) & (cos_val < 0.0):
-            theta = np.pi + np.arctan(sin_val/cos_val)
-        elif (sin_val < 0.0) & (cos_val == 0.0):
-            theta = 1.5*np.pi
+        if np.absolute(sin_val) <= 1e-6:
+            theta = 0.0 if cos_val > 0.0 else np.pi  # special case: x-axis
+        elif sin_val > 1e-6:
+            theta = np.arccos(cos_val)  # 1 & 2 Quadrant
         else:
-            theta = 2*np.pi + np.arctan(sin_val/cos_val)
+            theta = 2*np.pi - np.arccos(cos_val)  # 3 & 4 Quadrant
         return theta
 
 

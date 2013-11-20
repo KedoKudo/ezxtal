@@ -221,6 +221,10 @@ class RotationMatrix(object):
 def debug():
     """ Module debugging """
     print "Module debug begins:"
+    eulerangle_1 = EulerAngle(45, 20, 0)
+    print eulerangle_1.rotation_matrix
+    rot_m = RotationMatrix(eulerangle_1.rotation_matrix)
+    print rot_m.euler_angle
 
 
 if __name__ == "__main__":
