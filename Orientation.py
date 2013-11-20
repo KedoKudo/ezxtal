@@ -5,10 +5,14 @@ __author__ = "KenZ"
 #__Developer Note:
 #   A set of class used for describing orientation in space
 
+
 import numpy as np
 import numpy.linalg as La
 import cmath
 from Math import find_angle
+from Math import delta
+from Math import levi_civita
+from abc import ABCMeta, abstractproperty
 
 ##
 #TODO: Need class for Quaternion, Rodrigues vector, and a wrapper class for XtalOrientation
@@ -17,28 +21,29 @@ from Math import find_angle
 
 class XtalOrientation(object):
     """ Base class for all crystal orientation related class"""
+    __metaclass__ = ABCMeta
 
-    @property
+    @abstractproperty
     def euler_angle(self):
         """ return orientation in the form of Euler angle"""
         return "Implemented in subclass"
 
-    @property
+    @abstractproperty
     def rotation_matrix(self):
         """ return orientation in the form of rotation matrix """
         return "Implemented in subclass"
 
-    @property
+    @abstractproperty
     def orientation_matrix(self):
         """ return orientation in the form of orientation matrix """
         return "Implemented in subclass"
 
-    @property
+    @abstractproperty
     def rotation_angle(self):
         """ return the rotation angle """
         return "Implemented in subclass"
 
-    @property
+    @abstractproperty
     def rotation_axis(self):
         """ return the rotation axis """
         return "Implemented in subclass"
@@ -81,8 +86,7 @@ class EulerAngle(XtalOrientation):
         """ Euler angles in degrees """
         return [self.__phi1, self.__phi, self.__phi2]
 
-    @euler_angle.setter
-    def euler_angle(self, new_angles):
+    def set_euler_angle(self, new_angles):
         """ set new Euler angles """
         self.__phi1 = new_angles[0]
         self.__phi = new_angles[1]
@@ -165,8 +169,7 @@ class RotationMatrix(XtalOrientation):
         """ accessor for rotation matrix """
         return self.__r
 
-    @rotation_matrix.setter
-    def rotation_matrix(self, new_r):
+    def set_rotation_matrix(self, new_r):
         """ modifier for rotation matrix"""
         self.__r = new_r
 
@@ -232,6 +235,60 @@ class RotationMatrix(XtalOrientation):
         return angles
 
     #TODO: add conversion to Rodrigues vectors, quaternion
+
+
+class Rodrigues(XtalOrientation):
+    """ representing crystal orientation using Rodrigues vector"""
+    __slots__ = ["__r"]
+
+    def __init__(self, r1, r2, r3):
+        """ initialize with  3 components"""
+        self.__r = [r1, r2, r3]
+
+    def __len__(self):
+        """ the length of the vector """
+        return 3
+
+    @property
+    def rodrigues(self):
+        """ accessor for Rodrigues vector """
+        return self.__r
+
+    def set_rodrigues(self, new_r):
+        """ modifier for Rodrigues vector """
+        self.__r = new_r
+
+    @property
+    def rotation_matrix(self):
+        """ convert Rodrigues vector to rotation matrix """
+        rot_matrix = np.zeros((3, 3))
+        scale = 1.0 / (1.0 + np.dot(self.__r, self.__r))
+        for i in range(3):
+            for j in range(3):
+                rot_matrix[i, j] = scale * ((1 - np.dot(self.__r, self.__r)) * delta(i, j) +
+                                            2 * self.__r[i] * self.__r[j] -
+                                            sum([levi_civita(i, j, k) * self.__r[k] for k in range(3)]))
+        return rot_matrix
+
+    @property
+    def orientation_matrix(self):
+        """ convert Rodrigues vector into orientation matrix """
+        return self.rotation_matrix.T
+
+    @property
+    def euler_angle(self):
+        """ convert Rodrigues vector into Euler angles """
+        return RotationMatrix(self.rotation_matrix).euler_angle
+
+    @property
+    def rotation_axis(self):
+        """ return the rotation axis """
+        return self.__r / La.norm(self.__r)
+
+    @property
+    def rotation_angle(self):
+        """ return the rotation angle around the rotation axis """
+        return np.arctan(La.norm(self.__r))
 
 
 def debug():

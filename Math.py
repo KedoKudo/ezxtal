@@ -93,6 +93,16 @@ def find_angle(sin_val, cos_val):
         return theta
 
 
+def delta(i, j):
+    """ return 1 if i,j are different, 0 otherwise """
+    return 0.0 if np.absolute(i - j) < 1e-6 else 1.0
+
+
+def levi_civita(i, j, k):
+    """ return the output of Levi-Civita """
+    return int((i - j) * (j - k) * (k - i) / 2)  # source: https://gist.github.com/Juanlu001/2689795
+
+
 def debug():
     """
     For debug purpose
