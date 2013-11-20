@@ -11,6 +11,8 @@
       <w>deviatoric</w>
       <w>inplane</w>
       <w>multidimensinal</w>
+      <w>rodrigues</w>
+      <w>xtal</w>
     </words>
   </dictionary>
 </component>

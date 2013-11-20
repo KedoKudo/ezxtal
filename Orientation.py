@@ -15,7 +15,46 @@ from Math import find_angle
 #
 
 
-class EulerAngle(object):
+class XtalOrientation(object):
+    """ Base class for all crystal orientation related class"""
+
+    @property
+    def euler_angle(self):
+        """ return orientation in the form of Euler angle"""
+        return "Implemented in subclass"
+
+    @property
+    def rotation_matrix(self):
+        """ return orientation in the form of rotation matrix """
+        return "Implemented in subclass"
+
+    @property
+    def orientation_matrix(self):
+        """ return orientation in the form of orientation matrix """
+        return "Implemented in subclass"
+
+    @property
+    def rotation_angle(self):
+        """ return the rotation angle """
+        return "Implemented in subclass"
+
+    @property
+    def rotation_axis(self):
+        """ return the rotation axis """
+        return "Implemented in subclass"
+
+    @property
+    def rodrigues(self):
+        """ return the orientation in the form of Rodrigues vector """
+        return "Implemented in subclass"
+
+    @property
+    def quaternion(self):
+        """ return teh orientation in the form of Quaternion vector """
+        return "Implemented in subclass"
+
+
+class EulerAngle(XtalOrientation):
     """ Bunge Euler Angle (intrinsic rotation: z->x'->z'') """
     __slots__ = ["__phi1", "__phi", "__phi2"]  # streamline memory use
 
@@ -38,12 +77,12 @@ class EulerAngle(object):
         return 3
 
     @property
-    def angles(self):
+    def euler_angle(self):
         """ Euler angles in degrees """
         return [self.__phi1, self.__phi, self.__phi2]
 
-    @angles.setter
-    def angles(self, new_angles):
+    @euler_angle.setter
+    def euler_angle(self, new_angles):
         """ set new Euler angles """
         self.__phi1 = new_angles[0]
         self.__phi = new_angles[1]
@@ -51,33 +90,18 @@ class EulerAngle(object):
 
     @property
     def phi1(self):
-        """ the first Euler angle """
+        """ accessor for the first Euler angle """
         return self.__phi1
-
-    @phi1.setter
-    def phi1(self, new_phi1):
-        """ set new phi1 """
-        self.__phi1 = new_phi1
 
     @property
     def phi(self):
-        """ second Euler angle """
+        """ accessor for second Euler angle """
         return self.__phi
-
-    @phi.setter
-    def phi(self, new_phi):
-        """ set new PHI """
-        self.__phi = new_phi
 
     @property
     def phi2(self):
-        """ last Euler angle """
+        """ accessor for last Euler angle """
         return self.__phi2
-
-    @phi2.setter
-    def phi2(self, new_phi2):
-        """ set new phi_2 """
-        self.__phi2 = new_phi2
 
     @property
     def orientation_matrix(self):
@@ -121,7 +145,7 @@ class EulerAngle(object):
     #TODO: add conversion to Rodrigues vectors, quaternion
 
 
-class RotationMatrix(object):
+class RotationMatrix(XtalOrientation):
     """ represent the orientation using standard rotation matrix """
     __slots__ = ["__r"]
 
@@ -145,6 +169,11 @@ class RotationMatrix(object):
     def rotation_matrix(self, new_r):
         """ modifier for rotation matrix"""
         self.__r = new_r
+
+    @property
+    def orientation_matrix(self):
+        """ return the orientation matrix """
+        return self.__r.T
 
     @property
     def rotation_axis(self):
@@ -201,6 +230,8 @@ class RotationMatrix(object):
             phi2 = find_angle(sin_phi2, cos_phi2)
             angles[2] = phi2 * 180 / np.pi
         return angles
+
+    #TODO: add conversion to Rodrigues vectors, quaternion
 
 
 def debug():

@@ -11,7 +11,6 @@ from Geometry2D import Polygon2D
 
 from Orientation import EulerAngle
 from Orientation import RotationMatrix
-from Orientation import Quaternion
 
 from Math import find_angle
 from Math import Vector
