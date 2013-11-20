@@ -26,21 +26,6 @@ class EulerAngle(object):
         self.__phi = phi * deg2rad
         self.__phi2 = phi2 * deg2rad
 
-    def __eq__(self, other):
-        """ crystal symmetry is not taken into consideration at this point """
-        # do calculation here, Bunge Euler angle is not 1-on-1 mapping,
-        # have to compare the Rotation matrix instead. No symmetry is
-        # considered here as the crystal symmetry will have a huge effect
-        # and should be considered in the Crystal module
-        flag = False
-        test = np.dot(self.rotation_axis, other.rotation_axis)
-        if 1 - np.absolute(test) < 1e-6:
-            # the rotation axis is the same, now considering rotation angle
-            test_ang = self.rotation_angle - other.rotation_angle
-            if np.absolute(test_ang) < 1e-6:
-                flag = True
-        return flag
-
     def __str__(self):
         """ output Euler angles using degrees """
         rad2deg = 180 / np.pi
