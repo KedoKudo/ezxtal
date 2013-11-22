@@ -283,7 +283,7 @@ class Rodrigues(XtalOrientation):
             for j in range(3):
                 rot_matrix[i, j] = scale * ((1 - np.dot(self.__r, self.__r)) * delta(i, j) +
                                             2 * self.__r[i] * self.__r[j] -
-                                            sum([levi_civita(i, j, k) * self.__r[k] for k in range(3)]))
+                                            2 * sum([levi_civita(i, j, k) * self.__r[k] for k in range(3)]))
         return rot_matrix
 
     @property

@@ -5,8 +5,10 @@
     <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoredIdentifiers">
         <value>
-          <list size="1">
+          <list size="3">
             <item index="0" class="java.lang.String" itemvalue="numpy.*" />
+            <item index="1" class="java.lang.String" itemvalue="int.__getitem__" />
+            <item index="2" class="java.lang.String" itemvalue="int.T" />
           </list>
         </value>
       </option>
