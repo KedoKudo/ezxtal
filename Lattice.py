@@ -16,6 +16,11 @@ import numpy.linalg as La
 
 
 ##
+# TODO: Though the calculation for reciprocal lattice is based on wiki, it somehow causes more noises than necessary.
+# TODO: Need more testing on this subject
+
+
+##
 # Define lattice
 class Lattice(object):
     """light weight class to represent the lattice structure"""

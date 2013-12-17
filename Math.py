@@ -84,7 +84,7 @@ def find_angle(sin_val, cos_val):
         """
         sin_val = float(sin_val)
         cos_val = float(cos_val)
-        if np.absolute(sin_val) <= 1e-6:
+        if abs(sin_val) <= 1e-6:
             theta = 0.0 if cos_val > 0.0 else np.pi  # special case: x-axis
         elif sin_val > 1e-6:
             theta = np.arccos(cos_val)  # 1 & 2 Quadrant
@@ -103,11 +103,27 @@ def levi_civita(i, j, k):
     return int((i - j) * (j - k) * (k - i) / 2)  # source: https://gist.github.com/Juanlu001/2689795
 
 
+def bravis_miller_2_cartesian(index4, c_over_a=1.58):
+    """ convert Bravis-Miller indices to standard Cartesian Coordinates """
+    # a 3x4 matrix that will convert both slip direction and plane normal from Bravis-Miller to Standard Miller indices
+    miller2cartesian = np.array([[1, 0, 0, 0],
+                                 [1/np.sqrt(3), 2/np.sqrt(3), 0, 0],
+                                 [0, 0, 0, 1/c_over_a]])
+    cartesian = np.dot(miller2cartesian, index4)
+    return cartesian/np.linalg.norm(cartesian)
+
+
 def debug():
     """
     For debug purpose
     """
     print "Debug begins"
+    # check for find_angle
+    for i in range(0, 1000):
+        theta = 2 * np.pi/1e3 * i
+        error = theta - find_angle(np.sin(theta), np.cos(theta))
+        if error > 1e-10:
+            print "{}".format(error)
 
 if __name__ == "__main__":
     debug()

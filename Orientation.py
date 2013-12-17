@@ -14,6 +14,12 @@ from Math import delta
 from Math import levi_civita
 from abc import ABCMeta, abstractproperty
 
+
+##
+# MACRO
+ERROR = 1e-12
+
+
 ##
 #TODO: Need class for Quaternion
 #TODO: There seems to be some bugs in the Rodrigues class, do not use it until it's fixed.
@@ -89,9 +95,10 @@ class EulerAngle(XtalOrientation):
 
     def set_euler_angle(self, new_angles):
         """ set new Euler angles """
-        self.__phi1 = new_angles[0]
-        self.__phi = new_angles[1]
-        self.__phi2 = new_angles[2]
+        deg2rad = np.pi / 180
+        self.__phi1 = new_angles[0] * deg2rad
+        self.__phi = new_angles[1] * deg2rad
+        self.__phi2 = new_angles[2] * deg2rad
 
     @property
     def phi1(self):
@@ -127,7 +134,11 @@ class EulerAngle(XtalOrientation):
         g_phi2 = np.array([[np.cos(self.__phi2), np.sin(self.__phi2), 0.0],
                            [-np.sin(self.__phi2), np.cos(self.__phi2), 0.0],
                            [0.0, 0.0, 1.0]])
-        g = np.dot(g_phi2, np.dot(g_phi, g_phi1))  # the total orientation matrix is g = g_phi1 * g_phi * g_phi1
+        g = np.dot(g_phi2, np.dot(g_phi, g_phi1))  # the total orientation matrix is g = g_phi2 * g_phi * g_phi1
+        for i in range(3):
+            for j in range(3):
+                if abs(g[i, j]) < ERROR:
+                    g[i, j] = 0.0
         return g
 
     @property
