@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ##
-# Unit test for ezxtal module using PET
+# Unit test using PET
 #   url: http://docs.python.org/2/library/unittest.html
 
 

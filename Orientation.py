@@ -4,20 +4,20 @@ __author__ = "KenZ"
 
 #__Developer Note:
 #   A set of class used for describing orientation in space
+#   Assuming that Euler angles are always in degree.
 
 
 import numpy as np
 import numpy.linalg as La
 import cmath
 from Math import find_angle
-from Math import delta
-from Math import levi_civita
 from abc import ABCMeta, abstractproperty
 
 
 ##
 # MACRO
-ERROR = 1e-12
+#
+ERROR = 1e-6
 
 
 ##
@@ -61,11 +61,6 @@ class XtalOrientation(object):
         pass
 
     @abstractproperty
-    def rodrigues(self):
-        """ return the orientation in the form of Rodrigues vector """
-        pass
-
-    @abstractproperty
     def quaternion(self):
         """ return teh orientation in the form of Quaternion vector """
         pass
@@ -85,10 +80,10 @@ class EulerAngle(XtalOrientation):
     def __str__(self):
         """ output Euler angles using degrees """
         rad2deg = 180 / np.pi
-        out_string = "Bunge Euler angle: [{:.2f}, {:.2f}, {:.2f}]".format(self.__phi1 * rad2deg,
-                                                                          self.__phi * rad2deg,
-                                                                          self.__phi2 * rad2deg)
-        return out_string
+        out_str = "[{:.4f}, {:.4f}, {:.4f}]".format(self.__phi1 * rad2deg,
+                                                    self.__phi * rad2deg,
+                                                    self.__phi2 * rad2deg)
+        return out_str
 
     def __len__(self):
         return 3
@@ -99,7 +94,7 @@ class EulerAngle(XtalOrientation):
         return [self.__phi1, self.__phi, self.__phi2]
 
     def set_euler_angle(self, new_angles):
-        """ set new Euler angles """
+        """ set new Euler angles with vec3"""
         deg2rad = np.pi / 180
         self.__phi1 = new_angles[0] * deg2rad
         self.__phi = new_angles[1] * deg2rad
@@ -130,6 +125,7 @@ class EulerAngle(XtalOrientation):
         #       people are accustomed to the Bunge system, which is based on orientation matrix instead of the more
         #       commonly accepted rotation matrix (R), g is generally computed instead of R during computation material
         #       science.
+        #
         g_phi1 = np.array([[np.cos(self.__phi1), np.sin(self.__phi1), 0.0],
                            [-np.sin(self.__phi1), np.cos(self.__phi1), 0.0],
                            [0.0, 0.0, 1.0]])
@@ -143,7 +139,7 @@ class EulerAngle(XtalOrientation):
         for i in range(3):
             for j in range(3):
                 if abs(g[i, j]) < ERROR:
-                    g[i, j] = 0.0
+                    g[i, j] = 0.0  # rounding error removed
         return g
 
     @property
@@ -159,27 +155,23 @@ class EulerAngle(XtalOrientation):
 
     @property
     def rotation_angle(self):
-        """ return the rotation angle around the rotation axis """
+        """ return the rotation angle around the rotation axis in radians"""
         rot_m = RotationMatrix(self.rotation_matrix)
         return rot_m.rotation_angle
 
     @property
     def rotation_angled(self):
         """ return the rotation angle in degree """
-        return self.rotation_angle * 180.0 / np.pi
-
-    @property
-    def rodrigues(self):
-        """ convert Euler angles into Rodrigues vector """
-        return RotationMatrix(self.rotation_matrix).rodrigues
+        ang = float(self.rotation_angle) * 180.0 / np.pi
+        return ang
 
     @property
     def quaternion(self):
         """ return the quaternion vector [w, x, y, z] """
         ang = self.rotation_angle
         axs = self.rotation_axis
-        tmp = axs * np.sin(ang/2.0)
-        return tmp.insert(0, np.cos(ang/2.0))
+        tmp_q = [np.cos(ang/2.0), np.sin(ang/2.0)*axs[0], np.sin(ang/2.0)*axs[1], np.sin(ang/2.0)*axs[2]]
+        return tmp_q
 
 
 class RotationMatrix(XtalOrientation):
@@ -194,7 +186,7 @@ class RotationMatrix(XtalOrientation):
                 self.__r[i, j] = rotation_matrix[i, j]
 
     def __len__(self):
-        """ size of the rotation matrix"""
+        """ size of the rotation matrix """
         return "3 x 3"
 
     @property
@@ -203,7 +195,7 @@ class RotationMatrix(XtalOrientation):
         return self.__r
 
     def set_rotation_matrix(self, new_r):
-        """ modifier for rotation matrix"""
+        """ modifier for rotation matrix with numpy.array((3, 3)) """
         self.__r = new_r
 
     @property
@@ -237,106 +229,50 @@ class RotationMatrix(XtalOrientation):
         # if it returns a rotation angle that is greater than 360, then something is wrong
         rot_angle = "ERROR"
         for index in range(3):
-            if np.absolute(values[index] - 1) > 1e-6:  # 1 is eigenvalue for the rotation axis
+            if np.absolute(values[index] - 1) > ERROR:  # 1 is eigenvalue for the rotation axis
                 rot_angle = np.absolute(cmath.phase(values[index]))
                 break
         if rot_angle == "ERROR":
-            rot_angle = 0.0  # non-rotation case
+            rot_angle = 0.0  # non-rotation case with eigenvalue (1, 1, 1)
         return rot_angle
 
     @property
     def rotation_angled(self):
         """ get rotation angle around the axis in degree """
-        return self.rotation_angle * 180.0 / np.pi
+        ang = float(self.rotation_angle) * 180.0 / np.pi
+        return ang
 
     @property
     def euler_angle(self):
-        """ return one set of Euler Angle w.r.t the rotation matrix """
+        """ return one set of Euler Angle w.r.t the rotation matrix
+            NOTE: Euler Angles are always in degrees """
         angles = [0, 0, 0]
         if np.absolute(self.__r[2, 2] - 1.0) < 1e-6:
         #simple one rotation case
             phi1 = find_angle(-self.__r[0, 1], self.__r[0, 0])
-            angles[0] = phi1 * 180 / np.pi
+            angles[0] = phi1 * 180.0 / np.pi
         else:
             phi = np.arccos(self.__r[2, 2])
-            angles[1] = phi * 180 / np.pi
+            angles[1] = phi * 180.0 / np.pi
             #calculate __phi1
             sin_phi1 = self.__r[0, 2] / np.sin(phi)
             cos_phi1 = -self.__r[1, 2] / np.sin(phi)
             phi1 = find_angle(sin_phi1, cos_phi1)
-            angles[0] = phi1 * 180 / np.pi
+            angles[0] = phi1 * 180.0 / np.pi
             #calculate __phi2
             sin_phi2 = self.__r[2, 0] / np.sin(phi)
             cos_phi2 = self.__r[2, 1] / np.sin(phi)
             phi2 = find_angle(sin_phi2, cos_phi2)
-            angles[2] = phi2 * 180 / np.pi
+            angles[2] = phi2 * 180.0 / np.pi
         return angles
 
     @property
-    def rodrigues(self):
-        """ convert rotation matrix into Rodrigues vector """
-        scale = -1.0 / (1.0 + sum(sum(self.__r * self.__r)))
-        rodrigues = [0, 0, 0]
-        for i in range(3):
-            rodrigues[i] = scale * sum([sum([levi_civita(i, j, k) * self.__r[j, k] for k in range(3)])
-                                        for j in range(3)])
-        return rodrigues
-
-    #TODO: add conversion to quaternion
-
-
-class Rodrigues(XtalOrientation):
-    """ representing crystal orientation using Rodrigues vector"""
-    __slots__ = ["__r"]
-
-    def __init__(self, r1, r2, r3):
-        """ initialize with  3 components"""
-        self.__r = [r1, r2, r3]
-
-    def __len__(self):
-        """ the length of the vector """
-        return 3
-
-    @property
-    def rodrigues(self):
-        """ accessor for Rodrigues vector """
-        return self.__r
-
-    def set_rodrigues(self, new_r):
-        """ modifier for Rodrigues vector """
-        self.__r = new_r
-
-    @property
-    def rotation_matrix(self):
-        """ convert Rodrigues vector to rotation matrix """
-        rot_matrix = np.zeros((3, 3))
-        scale = 1.0 / (1.0 + np.dot(self.__r, self.__r))
-        for i in range(3):
-            for j in range(3):
-                rot_matrix[i, j] = scale * ((1 - np.dot(self.__r, self.__r)) * delta(i, j) +
-                                            2 * self.__r[i] * self.__r[j] -
-                                            2 * sum([levi_civita(i, j, k) * self.__r[k] for k in range(3)]))
-        return rot_matrix
-
-    @property
-    def orientation_matrix(self):
-        """ convert Rodrigues vector into orientation matrix """
-        return self.rotation_matrix.T
-
-    @property
-    def euler_angle(self):
-        """ convert Rodrigues vector into Euler angles """
-        return RotationMatrix(self.rotation_matrix).euler_angle
-
-    @property
-    def rotation_axis(self):
-        """ return the rotation axis """
-        return self.__r / La.norm(self.__r)
-
-    @property
-    def rotation_angle(self):
-        """ return the rotation angle around the rotation axis """
-        return np.arctan(La.norm(self.__r))
+    def quaternion(self):
+        """ return an equivalent quaternion [w, x, y ,z] """
+        ang = self.rotation_angle
+        axs = self.rotation_axis
+        tmp_q = [np.cos(ang/2.0), np.sin(ang/2.0)*axs[0], np.sin(ang/2.0)*axs[1], np.sin(ang/2.0)*axs[2]]
+        return tmp_q
 
 
 class Quaternion(XtalOrientation):
@@ -351,13 +287,105 @@ class Quaternion(XtalOrientation):
         self.__y = y
         self.__z = z
 
+    def __str__(self):
+        """ formatted output for quaternion """
+        w = self.w
+        v = self.v
+        out_str = "[{:.4f}, {:.4f}, {:.4f}, {:.4f}]".format(w, v[0], v[1], v[2])
+        return out_str
 
-def debug():
-    """ Module debugging """
-    print "Module debug begins:"
-    eulerangle_1 = EulerAngle(40, 20, 5)
-    print eulerangle_1.rotation_matrix
+    def __add__(self, other):
+        """ quaternions can only operate on its self  """
+        if isinstance(other, self.__class__):
+            tmp_add = [0, 0, 0, 0]
+            for index in range(4):
+                tmp_add[index] = self.quaternion[index] + other.quaternion[index]
+            return tmp_add  # no normalization here
+        else:
+            raise TypeError("unsupported operand type(s) for +: '{}' and '{}'.".format(self.__class__, type(other)))
 
+    def __sub__(self, other):
+        """ quaternion can only operate on its self """
+        if isinstance(other, self.__class__):
+            tmp_sub = [0, 0, 0, 0]
+            for index in range(4):
+                tmp_sub[index] = self.quaternion[index] - other.quaternion[index]
+            return tmp_sub
+        else:
+            raise TypeError("unsupported operand type(s) for -: '{}' and '{}'.".format(self.__class__, type(other)))
 
-if __name__ == "__main__":
-    debug()
+    def __mul__(self, other):
+        """ standard multiplication between two quaternions """
+        if isinstance(other, self.__class__):
+            mul_matrix_self = np.array([[self.__w, -self.__x, -self.__y, -self.__z],
+                                        [self.__x,  self.__w, -self.__z,  self.__y],
+                                        [self.__y,  self.__z,  self.__w, -self.__x],
+                                        [self.__z, -self.__y,  self.__x,  self.__w]])
+            return np.array(np.dot(mul_matrix_self, other.quaternion))
+        else:
+            raise TypeError("unsupported operand type(s) for *: '{}' and '{}'.".format(self.__class__, type(other)))
+
+    @property
+    def w(self):
+        """ return w in [w, x, y, z] """
+        return self.__w
+
+    @property
+    def v(self):
+        """ return the v """
+        return [self.__x, self.__y, self.__z]
+
+    @property
+    def quaternion(self):
+        """ return the whole quaternion as a list"""
+        return [self.__w, self.__x, self.__y, self.__z]
+
+    @property
+    def normalized(self):
+        """ return the normalized quaternion """
+        return self.quaternion / La.norm(self.quaternion)
+
+    @property
+    def euler_angle(self):
+        """ return an equivalent Euler Angle """
+        tmp_rot = RotationMatrix(self.rotation_matrix)
+        return tmp_rot.euler_angle
+
+    @property
+    def rotation_matrix(self):
+        """ return an equivalent rotation matrix """
+        w = self.__w
+        x = self.__x
+        y = self.__y
+        z = self.__z
+        tmp_rot = np.array([[1 - 2*(y**2 + z**2), 2*(x*y - w*z), 2*(x*z + w*y)],
+                            [2*(x*y + w*z), 1 - 2*(x**2 + z**2), 2*(y*z - w*x)],
+                            [2*(x*z - w*y), 2*(y*z + w*x), 1 - 2*(x**2 + y**2)]])
+        return tmp_rot
+
+    @property
+    def orientation_matrix(self):
+        """ return an equivalent orientation matrix """
+        return self.rotation_matrix.T
+
+    @property
+    def rotation_axis(self):
+        """ return the rotation axis (unit vector) """
+        return self.v / La.norm(self.v)
+
+    @property
+    def rotation_angle(self):
+        """ return the rotation angle in radians """
+        return 2 * np.arccos(self.normalized[0])  # need to use the normalized q
+
+    @property
+    def rotation_angled(self):
+        """ return the rotation angle in degrees """
+        return float(self.rotation_angle) * 180.0 / np.pi
+
+    def is_pure(self):
+        """ if w = 0, it's a pure quaternion """
+        if np.absolute(self.w) < ERROR:
+            return True
+        else:
+            return False

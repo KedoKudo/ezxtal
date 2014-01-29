@@ -4,16 +4,20 @@ __author__ = "KenZ"
 
 
 #__Developer Note:
-#   Provide some basic 2D plot types using PIL
+#   Provide some basic 2D plot types using PIL/svgwrite
+#
+
+#__NOTE:
+#   Generally a vector plot is better, especially when integrated with
+#   latex for auto-report.
 
 import numpy as np
-import Image
-import ImageDraw
-import matplotlib.pyplot as plt
+import svgwrite
 
 
 class PoleFigure(object):
-    """ generate standard pole figure based on given data, use matplotlib for backend"""
+    """ generate standard pole figure based on given data
+        NOTE: use svgwrite to generate a svg (vector plot) """
 
     def __init__(self, plot_data):
         """ initialize plot """
@@ -26,12 +30,3 @@ class GridPlot(object):
     def __init__(self, plot_data, grid="hex"):
         """ grid type:  ["hex", "cube"] """
         pass
-
-
-def debug():
-    """ module testing """
-    print "Debug starts"
-
-
-if __name__ == "__main__":
-    debug()
