@@ -33,37 +33,42 @@ class XtalOrientation(object):
     @abstractproperty
     def euler_angle(self):
         """ return orientation in the form of Euler angle"""
-        return "Implemented in subclass"
+        pass
 
     @abstractproperty
     def rotation_matrix(self):
         """ return orientation in the form of rotation matrix """
-        return "Implemented in subclass"
+        pass
 
     @abstractproperty
     def orientation_matrix(self):
         """ return orientation in the form of orientation matrix """
-        return "Implemented in subclass"
+        pass
 
     @abstractproperty
     def rotation_angle(self):
-        """ return the rotation angle """
-        return "Implemented in subclass"
+        """ return the rotation angle in radians"""
+        pass
+
+    @abstractproperty
+    def rotation_angled(self):
+        """ return the rotation angle in degree """
+        pass
 
     @abstractproperty
     def rotation_axis(self):
         """ return the rotation axis """
-        return "Implemented in subclass"
+        pass
 
     @abstractproperty
     def rodrigues(self):
         """ return the orientation in the form of Rodrigues vector """
-        return "Implemented in subclass"
+        pass
 
-    @property
+    @abstractproperty
     def quaternion(self):
         """ return teh orientation in the form of Quaternion vector """
-        return "Implemented in subclass"
+        pass
 
 
 class EulerAngle(XtalOrientation):
@@ -159,11 +164,22 @@ class EulerAngle(XtalOrientation):
         return rot_m.rotation_angle
 
     @property
+    def rotation_angled(self):
+        """ return the rotation angle in degree """
+        return self.rotation_angle * 180.0 / np.pi
+
+    @property
     def rodrigues(self):
         """ convert Euler angles into Rodrigues vector """
         return RotationMatrix(self.rotation_matrix).rodrigues
 
-    #TODO: add conversion to quaternion
+    @property
+    def quaternion(self):
+        """ return the quaternion vector [w, x, y, z] """
+        ang = self.rotation_angle
+        axs = self.rotation_axis
+        tmp = axs * np.sin(ang/2.0)
+        return tmp.insert(0, np.cos(ang/2.0))
 
 
 class RotationMatrix(XtalOrientation):
@@ -216,17 +232,22 @@ class RotationMatrix(XtalOrientation):
 
     @property
     def rotation_angle(self):
-        """ Get rotation angle around the rotation axis w.r.t the result in self.rotation_axis """
+        """ Get rotation angle around the rotation axis w.r.t the result in self.rotation_axis in radians """
         values, axis = La.eig(self.__r)
         # if it returns a rotation angle that is greater than 360, then something is wrong
         rot_angle = "ERROR"
         for index in range(3):
             if np.absolute(values[index] - 1) > 1e-6:  # 1 is eigenvalue for the rotation axis
-                rot_angle = np.absolute(cmath.phase(values[index]) * 180.0 / np.pi)
+                rot_angle = np.absolute(cmath.phase(values[index]))
                 break
         if rot_angle == "ERROR":
             rot_angle = 0.0  # non-rotation case
         return rot_angle
+
+    @property
+    def rotation_angled(self):
+        """ get rotation angle around the axis in degree """
+        return self.rotation_angle * 180.0 / np.pi
 
     @property
     def euler_angle(self):
@@ -318,15 +339,24 @@ class Rodrigues(XtalOrientation):
         return np.arctan(La.norm(self.__r))
 
 
+class Quaternion(XtalOrientation):
+    """ Representing orientation using Quaternion """
+
+    __slots__ = ["__w", "__x", "__y", "__z"]
+
+    def __init__(self, w, x, y, z):
+        """ initialize a quaternion with vec4 """
+        self.__w = w
+        self.__x = x
+        self.__y = y
+        self.__z = z
+
+
 def debug():
     """ Module debugging """
     print "Module debug begins:"
     eulerangle_1 = EulerAngle(40, 20, 5)
     print eulerangle_1.rotation_matrix
-    rodrigues_1 = Rodrigues(eulerangle_1.rodrigues[0],
-                            eulerangle_1.rodrigues[1],
-                            eulerangle_1.rodrigues[2])
-    print rodrigues_1.rotation_matrix  # something is very wrong here, I'll fix it later...
 
 
 if __name__ == "__main__":

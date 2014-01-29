@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2a83a358-a53f-4c5b-90f6-dbbe48d04779" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Lattice.py" afterPath="$PROJECT_DIR$/Lattice.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Math.py" afterPath="$PROJECT_DIR$/Math.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Orientation.py" afterPath="$PROJECT_DIR$/Orientation.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -29,11 +27,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Geometry2D.py" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Geometry2D.py">
+      <file leaf-file-name="Canvas.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Canvas.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="224" column="32" selection-start="7692" selection-end="7692" vertical-scroll-proportion="-0.06696428" vertical-offset="3360" max-vertical-offset="4200">
+            <state line="23" column="58" selection-start="475" selection-end="475" vertical-scroll-proportion="0.0" vertical-offset="345" max-vertical-offset="630">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Orientation.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Orientation.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="358" column="38" selection-start="11821" selection-end="11821" vertical-scroll-proportion="0.0" vertical-offset="4669" max-vertical-offset="5445">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="unitTest.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/unitTest.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="26" column="0" selection-start="607" selection-end="607" vertical-scroll-proportion="0.5025773" vertical-offset="0" max-vertical-offset="776">
+              <folding>
+                <element signature="e#124#139#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -62,14 +80,16 @@
         <option value="$PROJECT_DIR$/__init__.py" />
         <option value="$PROJECT_DIR$/Lattice.py" />
         <option value="$PROJECT_DIR$/Math.py" />
+        <option value="$PROJECT_DIR$/Canvas.py" />
         <option value="$PROJECT_DIR$/Orientation.py" />
+        <option value="$PROJECT_DIR$/doc/unitTest.py" />
+        <option value="$PROJECT_DIR$/unitTest.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="22" />
     <option name="width" value="1440" />
-    <option name="height" value="818" />
+    <option name="height" value="900" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -116,7 +136,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -137,18 +156,19 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
     <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/bin/python2.7" />
+    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="FullScreen" value="false" />
-    <property name="options.searchVisible" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/unitTest.py" />
+    <property name="FullScreen" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -161,8 +181,8 @@
   <component name="PyDebuggerOptionsProvider">
     <option name="mySaveCallSignatures" value="true" />
   </component>
-  <component name="RunManager" selected="Python.Debug">
-    <configuration default="false" name="Debug" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.Unit Test">
+    <configuration default="false" name="Unit Test" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -175,7 +195,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="ezxtal" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Math.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/unitTest.py" />
       <option name="PARAMETERS" value="" />
       <RunnerSettings RunnerId="PyDebugRunner" />
       <RunnerSettings RunnerId="PythonRunner" />
@@ -308,11 +328,11 @@
       <method />
     </configuration>
     <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="Python.Debug" />
+      <item index="0" class="java.lang.String" itemvalue="Python.Unit Test" />
     </list>
     <recent_temporary>
       <list size="1">
-        <item index="0" class="java.lang.String" itemvalue="Python.Debug" />
+        <item index="0" class="java.lang.String" itemvalue="Python.Unit Test" />
       </list>
     </recent_temporary>
   </component>
@@ -396,14 +416,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1440" height="818" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32917705" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32917705" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1432604" sideWeight="0.67206985" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17925194" sideWeight="0.6728856" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17925194" sideWeight="0.6732394" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3990025" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32793018" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -413,7 +433,7 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32711443" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32676056" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -443,16 +463,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Math.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="11" selection-start="896" selection-end="896" vertical-scroll-proportion="0.0" vertical-offset="555" max-vertical-offset="645" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Orientation.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="139" column="11" selection-start="4699" selection-end="4699" vertical-scroll-proportion="0.0" vertical-offset="2040" max-vertical-offset="3555" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Math.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="11" selection-start="896" selection-end="896" vertical-scroll-proportion="0.0" vertical-offset="555" max-vertical-offset="645" />
@@ -510,20 +520,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Lattice.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="8" selection-start="561" selection-end="561" vertical-scroll-proportion="0.36211342" vertical-offset="4" max-vertical-offset="2055" />
+        <state line="19" column="8" selection-start="561" selection-end="561" vertical-scroll-proportion="-0.97657394" vertical-offset="922" max-vertical-offset="2025" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Orientation.py">
+    <entry file="file://$PROJECT_DIR$/Canvas.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="140" column="33" selection-start="4804" selection-end="4804" vertical-scroll-proportion="-1.1830357" vertical-offset="2805" max-vertical-offset="4995">
+        <state line="23" column="58" selection-start="475" selection-end="475" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="585">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Geometry2D.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="224" column="32" selection-start="7692" selection-end="7692" vertical-scroll-proportion="-0.06696428" vertical-offset="3360" max-vertical-offset="4200">
+        <state line="4" column="0" selection-start="44" selection-end="44" vertical-scroll-proportion="-4.1417527" vertical-offset="3274" max-vertical-offset="4245">
+          <folding>
+            <element signature="e#104#139#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Orientation.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="358" column="38" selection-start="11821" selection-end="11821" vertical-scroll-proportion="0.0" vertical-offset="4669" max-vertical-offset="5445">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/unitTest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="0" selection-start="607" selection-end="607" vertical-scroll-proportion="0.5025773" vertical-offset="0" max-vertical-offset="776">
+          <folding>
+            <element signature="e#124#139#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
