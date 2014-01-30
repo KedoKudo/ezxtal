@@ -277,12 +277,12 @@ class Quaternion(XtalOrientation):
 
     __slots__ = ["__w", "__x", "__y", "__z"]
 
-    def __init__(self, w, x, y, z):
+    def __init__(self, q):
         """ initialize a quaternion with vec4 """
-        self.__w = w
-        self.__x = x
-        self.__y = y
-        self.__z = z
+        self.__w = q[0]
+        self.__x = q[1]
+        self.__y = q[2]
+        self.__z = q[3]
 
     def __str__(self):
         """ formatted output for quaternion """
@@ -331,6 +331,11 @@ class Quaternion(XtalOrientation):
     def v(self):
         """ return the v """
         return [self.__x, self.__y, self.__z]
+
+    @property
+    def conj(self):
+        """ return conjugate """
+        return [self.__w, -self.__x, -self.__y, -self.__z]
 
     @property
     def quaternion(self):
@@ -390,4 +395,17 @@ class Quaternion(XtalOrientation):
 
 def average_orientation(orientation_list):
     """ return the average orientation using quaternion (http://www.acsu.buffalo.edu/~johnc/ave_quat07.pdf) """
-    pass
+    if not all(isinstance(item, XtalOrientation) for item in orientation_list):
+        raise TypeError("Only orientation can be averaged")
+    tmp = orientation_list.pop(0).quaternion
+    tmp_q = Quaternion(tmp)
+    tmp_mtrx = np.outer(tmp_q.quaternion, tmp_q.conj)
+    for i in range(len(orientation_list)):
+        tmp = orientation_list[i].quaternion
+        tmp_q = Quaternion(tmp)
+        tmp_mtrx += np.outer(tmp_q.quaternion, tmp_q.conj)
+    # take the average
+    tmp_mtrx /= len(orientation_list)
+    eig, vec = La.eig(tmp_mtrx)
+    # the largest eigenvalue correspond to the average quaternion
+    return Quaternion(vec.T[eig.index(max(eig))])
