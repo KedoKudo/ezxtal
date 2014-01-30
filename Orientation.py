@@ -91,7 +91,8 @@ class EulerAngle(XtalOrientation):
     @property
     def euler_angle(self):
         """ Euler angles in degrees """
-        return [self.__phi1, self.__phi, self.__phi2]
+        rad2deg = 180.0 / np.pi
+        return [self.__phi1 * rad2deg, self.__phi * rad2deg, self.__phi2 * rad2deg]
 
     def set_euler_angle(self, new_angles):
         """ set new Euler angles with vec3"""
@@ -207,34 +208,30 @@ class RotationMatrix(XtalOrientation):
     def rotation_axis(self):
         values, axis = La.eig(self.__r)
         axis = axis.T
-        # The rotation axis can only be found by analyze the e^{-i\theta} component.
-        # For counter clockwise rotation by theta, the rotation axis is the cross
-        # product of v_r and v_i from e^{-i\theta}
-        rot_axis = "ERROR"
-        for index in range(3):
-            if values[index].imag < 0:
-                v_r = [item.real for item in axis[index]]
-                v_i = [item.imag for item in axis[index]]
-                rot_axis = np.cross(v_r, v_i)
-                rot_axis /= La.norm(rot_axis)
-        # for non-rotation cases
-        if values[0] == values[1] == values[2] == 1:
-            rot_axis = np.array([1, 0, 0])  # arbitrary rotation axis
-        return rot_axis
+        ang = max([cmath.phase(item) for item in values])
+        # Special case
+        if abs(ang) < ERROR:
+            return [1.0, 0.0, 0.0]  # no rotation at all, pick x as default
+        elif abs(ang - np.pi) < ERROR:  # rotate 180 degree
+            for i in range(3):
+                if abs(1 - values[i]) < ERROR:
+                    return np.array(axis[i])
+        else:
+            for i in range(3):
+                if cmath.phase(values[i]) == self.rotation_angle:
+                    v_r = [item.real for item in axis[i]]
+                    v_i = [-item.imag for item in axis[i]]
+                    # The rotation axis can only be found by analyze the e^{-i\theta} component.
+                    # For counter clockwise rotation by theta, the rotation axis is the cross
+                    # product of v_r and v_i from e^{-i\theta}
+                    rot_axs = np.cross(v_r, v_i)
+                    return rot_axs / La.norm(rot_axs)
 
     @property
     def rotation_angle(self):
         """ Get rotation angle around the rotation axis w.r.t the result in self.rotation_axis in radians """
         values, axis = La.eig(self.__r)
-        # if it returns a rotation angle that is greater than 360, then something is wrong
-        rot_angle = "ERROR"
-        for index in range(3):
-            if np.absolute(values[index] - 1) > ERROR:  # 1 is eigenvalue for the rotation axis
-                rot_angle = np.absolute(cmath.phase(values[index]))
-                break
-        if rot_angle == "ERROR":
-            rot_angle = 0.0  # non-rotation case with eigenvalue (1, 1, 1)
-        return rot_angle
+        return max([cmath.phase(item) for item in values])  # always choose the positive one (personal preference)
 
     @property
     def rotation_angled(self):
@@ -389,3 +386,8 @@ class Quaternion(XtalOrientation):
             return True
         else:
             return False
+
+
+def average_orientation(orientation_list):
+    """ return the average orientation using quaternion (http://www.acsu.buffalo.edu/~johnc/ave_quat07.pdf) """
+    pass

@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2a83a358-a53f-4c5b-90f6-dbbe48d04779" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Canvas.py" afterPath="$PROJECT_DIR$/Canvas.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Orientation.py" afterPath="$PROJECT_DIR$/Orientation.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/__init__.py" afterPath="$PROJECT_DIR$/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/unitTest.py" afterPath="$PROJECT_DIR$/unitTest.py" />
     </list>
     <ignored path="ezxtal.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -43,7 +40,7 @@
       <file leaf-file-name="Orientation.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Orientation.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="334" column="25" selection-start="11676" selection-end="11676" vertical-scroll-proportion="0.632732" vertical-offset="4459" max-vertical-offset="5880">
+            <state line="392" column="8" selection-start="13573" selection-end="13573" vertical-scroll-proportion="7.5" vertical-offset="0" max-vertical-offset="5925">
               <folding />
             </state>
           </provider>
@@ -560,7 +557,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Orientation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="334" column="25" selection-start="11676" selection-end="11676" vertical-scroll-proportion="0.632732" vertical-offset="4459" max-vertical-offset="5880">
+        <state line="392" column="8" selection-start="13573" selection-end="13573" vertical-scroll-proportion="7.5" vertical-offset="0" max-vertical-offset="5925">
           <folding />
         </state>
       </provider>
