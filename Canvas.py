@@ -28,6 +28,7 @@ class PoleFigure(object):
         self.__title = "default"
         self.__data = eulers_list
         self.__plane_list = [[0, 0, 1]]
+        self.__is_literal = True  # whether to use permutation to get a family of planes
         self.__lattice_vector = np.array([1.0, 1.0, 1.0])  # most simple case as default
         # set up pyplot
         self.__fig = plt.figure()
@@ -40,6 +41,15 @@ class PoleFigure(object):
         plt.gca().set_ylim((-1.05, 1.05))
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
+
+    @property
+    def is_literal(self):
+        """ whether to plot by families (default=True) """
+        return self.__is_literal
+
+    @is_literal.setter
+    def is_literal(self, new_state):
+        self.__is_literal = new_state
 
     @property
     def unique_marker(self):
@@ -84,24 +94,12 @@ class PoleFigure(object):
         # first categorised with plane
         for each_plane in self.plane_list:
             label = "{"+"{0}, {1}, {2}".format(each_plane[0], each_plane[1], each_plane[2]) + "}"
-            tmp = []  # list of pole related to this family
             x_list = []
             y_list = []
-            for item in itertools.permutations(each_plane):
-                tmp.append(item)
-            for item in itertools.permutations([-each_plane[0], each_plane[1], each_plane[2]]):
-                tmp.append(item)
-            for item in itertools.permutations([each_plane[0], -each_plane[1], each_plane[2]]):
-                tmp.append(item)
-            for item in itertools.permutations([each_plane[0], each_plane[1], -each_plane[2]]):
-                tmp.append(item)
-            for item in itertools.permutations([-each_plane[0], -each_plane[1], each_plane[2]]):
-                tmp.append(item)
-            for item in itertools.permutations([each_plane[0], -each_plane[1], -each_plane[2]]):
-                tmp.append(item)
-            for item in itertools.permutations([-tmp_item for tmp_item in each_plane]):
-                tmp.append(item)
-            tmp = list(set(tmp))  # remove duplicates
+            if self.is_literal:
+                tmp = [each_plane]
+            else:
+                tmp = PoleFigure.get_permutations(each_plane)
             # second categorised with grain ID
             my_marker = ","  # default marker
             for each_euler in self.__data:
@@ -125,9 +123,23 @@ class PoleFigure(object):
             # start plotting
             plt.scatter(x_list, y_list, marker=my_marker, c=np.random.rand(3, 1), label=label)
         # set legend
-        plt.legend(loc='upper left', numpoints=1, ncol=3, fontsize=8, bbox_to_anchor=(0, 0))
+        plt.legend(loc='upper left', numpoints=1, ncol=6, fontsize=8, bbox_to_anchor=(0, 0))
         plt.title(self.title)
         plt.savefig(self.title + ".pdf")
+
+    @classmethod
+    def get_permutations(cls, plane):
+        """ return a list of unique family of planes w.r.t the given plane """
+        tmp = []
+        for item in itertools.permutations(plane):
+            tmp.append(tuple(item))
+            for scale in itertools.permutations([-1, 1, 1]):
+                tmp.append(tuple(np.array(item) * np.array(scale)))
+            for scale in itertools.permutations([-1, -1, 1]):
+                tmp.append(tuple(np.array(item) * np.array(scale)))
+            tmp.append(tuple(-tmp_item for tmp_item in item))
+        tmp = list(set(tmp))
+        return tmp
 
 
 class GridPlot(object):
