@@ -13,4 +13,6 @@ from Orientation import EulerAngle
 from Orientation import RotationMatrix
 from Orientation import Quaternion
 
+from Canvas import PoleFigure
+
 from Math import *
