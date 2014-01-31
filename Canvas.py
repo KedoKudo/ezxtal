@@ -30,6 +30,7 @@ class PoleFigure(object):
         self.__plane_list = [[0, 0, 1]]
         self.__is_literal = True  # whether to use permutation to get a family of planes
         self.__lattice_vector = np.array([1.0, 1.0, 1.0])  # most simple case as default
+        self.__output = "pdf"
         # set up pyplot
         self.__fig = plt.figure()
         self.__fig.add_subplot(111, aspect='equal')
@@ -41,6 +42,15 @@ class PoleFigure(object):
         plt.gca().set_ylim((-1.15, 1.15))
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
+
+    @property
+    def output(self):
+        """ output format """
+        return self.__output
+
+    @output.setter
+    def output(self, new_format):
+        self.__output = new_format
 
     @property
     def is_literal(self):
@@ -128,7 +138,7 @@ class PoleFigure(object):
         # set legend
         plt.legend(loc='upper left', numpoints=1, ncol=6, fontsize=8, bbox_to_anchor=(0, 0))
         plt.title(self.title)
-        plt.savefig(self.title + ".pdf")
+        plt.savefig(self.title + "." + self.output)
 
     @classmethod
     def get_permutations(cls, plane):
