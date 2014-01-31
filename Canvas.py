@@ -37,8 +37,8 @@ class PoleFigure(object):
         self.__unique_marker = False
         plt.plot([-1, 1], [0, 0], c="k")
         plt.plot([0, 0], [-1, 1], c="k")
-        plt.gca().set_xlim((-1.05, 1.05))
-        plt.gca().set_ylim((-1.05, 1.05))
+        plt.gca().set_xlim((-1.15, 1.15))
+        plt.gca().set_ylim((-1.15, 1.15))
         plt.gca().axes.get_xaxis().set_visible(False)
         plt.gca().axes.get_yaxis().set_visible(False)
 
@@ -122,6 +122,9 @@ class PoleFigure(object):
                         y_list.append(-x)
             # start plotting
             plt.scatter(x_list, y_list, marker=my_marker, c=np.random.rand(3, 1), label=label)
+        # label x/y axis
+        plt.text(1.1, 0.0, "y", horizontalalignment='center', verticalalignment='center', fontsize=15)
+        plt.text(0.0, -1.1, "x", horizontalalignment='center', verticalalignment='center', fontsize=15)
         # set legend
         plt.legend(loc='upper left', numpoints=1, ncol=6, fontsize=8, bbox_to_anchor=(0, 0))
         plt.title(self.title)
