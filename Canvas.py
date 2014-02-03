@@ -82,6 +82,11 @@ class PoleFigure(object):
         """ return the family of the plane to be plotted """
         return self.__plane_list
 
+    @plane_list.setter
+    def plane_list(self, new_list):
+        """ plot user specified set of planes instead of default one """
+        self.__plane_list = new_list
+
     def add_plane(self, plane):
         """ add one family to the pole figure """
         self.__plane_list.append(plane)
@@ -111,6 +116,8 @@ class PoleFigure(object):
             y_list = []
             if self.is_literal:
                 tmp = [each_plane]
+                opposite_plane = [-item for item in each_plane]
+                tmp.append(opposite_plane)
             else:
                 tmp = PoleFigure.get_permutations(each_plane)
             # second categorised with grain ID
