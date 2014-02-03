@@ -103,7 +103,10 @@ class PoleFigure(object):
                                   'd'))
         # first categorised with plane
         for each_plane in self.plane_list:
-            label = "{"+"{0}, {1}, {2}".format(each_plane[0], each_plane[1], each_plane[2]) + "}"
+            if self.is_literal:
+                label = "[" + "{0} {1} {2}".format(each_plane[0], each_plane[1], each_plane[2]) + "]"
+            else:
+                label = "{"+"{0}, {1}, {2}".format(each_plane[0], each_plane[1], each_plane[2]) + "}"
             x_list = []
             y_list = []
             if self.is_literal:
