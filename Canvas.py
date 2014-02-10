@@ -10,9 +10,6 @@ __author__ = "KenZ"
 #__NOTE:
 #   Use matplotlib, PIL does not support antialias
 
-import matplotlib as mpl
-mpl.use("cairo")
-
 import numpy as np
 import itertools
 import matplotlib.pyplot as plt

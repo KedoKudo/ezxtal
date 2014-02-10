@@ -94,6 +94,14 @@ class Line2D(Line):
             pts.append((x, y))
         return pts
 
+    def get_segments(self, step=5):
+        """ return a list of segments that can be directly used by matplotlib """
+        pt_list = self.get_discrete_pts(step=step)
+        segments = []
+        for i in range(len(pt_list) - 1):
+            segments.append([pt_list[i], pt_list[i+1]])
+        return np.array(segments)
+
 
 class Polygon2D(object):
     """polygon for 2D analysis"""
