@@ -121,11 +121,11 @@ class PoleFigure(object):
             else:
                 tmp = PoleFigure.get_permutations(each_plane)
             # second categorised with grain ID
-            my_marker = ","  # default marker
+            my_marker = "d"  # default marker
             for each_euler in self.__data:
                 if self.unique_marker:
                     my_marker = marker.next()
-                    plt.rcParams['text.usetex'] = False # otherwise, '^' will cause trouble
+                    plt.rcParams['text.usetex'] = False  # otherwise, '^' will cause trouble
                 euler = EulerAngle(each_euler[0], each_euler[1], each_euler[2])
                 rot_m = euler.rotation_matrix
                 for each_pole in tmp:

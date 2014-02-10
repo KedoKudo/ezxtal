@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2a83a358-a53f-4c5b-90f6-dbbe48d04779" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Canvas.py" afterPath="$PROJECT_DIR$/Canvas.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Geometry2D.py" afterPath="$PROJECT_DIR$/Geometry2D.py" />
     </list>
     <ignored path="ezxtal.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,35 +30,19 @@
       <file leaf-file-name="Canvas.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Canvas.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="111" column="31" selection-start="3203" selection-end="3203" vertical-scroll-proportion="0.41081873" vertical-offset="1384" max-vertical-offset="2670">
+            <state line="146" column="78" selection-start="5072" selection-end="5072" vertical-scroll-proportion="0.8002958" vertical-offset="1649" max-vertical-offset="2670">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Math.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Math.py">
+      <file leaf-file-name="Geometry2D.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Geometry2D.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="107" column="49" selection-start="3206" selection-end="3206" vertical-scroll-proportion="0.0" vertical-offset="1605" max-vertical-offset="2010">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Orientation.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Orientation.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="410" column="49" selection-start="14349" selection-end="14349" vertical-scroll-proportion="0.0" vertical-offset="6150" max-vertical-offset="6240">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="unitTest.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/unitTest.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="11" selection-start="37" selection-end="37" vertical-scroll-proportion="0.0" vertical-offset="45" max-vertical-offset="540">
-              <folding />
+            <state line="96" column="0" selection-start="3175" selection-end="3175" vertical-scroll-proportion="0.0" vertical-offset="1184" max-vertical-offset="4455">
+              <folding>
+                <element signature="e#104#139#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -82,13 +67,13 @@
       <list>
         <option value="$PROJECT_DIR$/Geometry.py" />
         <option value="$PROJECT_DIR$/Geometry3D.py" />
-        <option value="$PROJECT_DIR$/Geometry2D.py" />
         <option value="$PROJECT_DIR$/Lattice.py" />
         <option value="$PROJECT_DIR$/Math.py" />
         <option value="$PROJECT_DIR$/doc/unitTest.py" />
         <option value="$PROJECT_DIR$/unitTest.py" />
         <option value="$PROJECT_DIR$/Orientation.py" />
         <option value="$PROJECT_DIR$/__init__.py" />
+        <option value="$PROJECT_DIR$/Geometry2D.py" />
         <option value="$PROJECT_DIR$/Canvas.py" />
       </list>
     </option>
@@ -96,7 +81,7 @@
   <component name="ProjectFrameBounds">
     <option name="y" value="22" />
     <option name="width" value="1440" />
-    <option name="height" value="830" />
+    <option name="height" value="822" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -169,13 +154,13 @@
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
     <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/unitTest.py" />
+    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
     <property name="restartRequiresConfirmation" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/unitTest.py" />
     <property name="FullScreen" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -423,7 +408,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1440" height="830" extended-state="6" />
+    <frame x="0" y="22" width="1440" height="822" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32917705" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -505,19 +490,9 @@
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Geometry3D.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="2" selection-start="101" selection-end="101" vertical-scroll-proportion="0.1744186" vertical-offset="0" max-vertical-offset="4905" />
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Caches/PyCharm30/python_stubs/-831747255/__builtin__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="593" column="8" selection-start="19989" selection-end="19989" vertical-scroll-proportion="0.33247423" vertical-offset="8637" max-vertical-offset="76485" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Geometry2D.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="44" selection-end="44" vertical-scroll-proportion="0.0" vertical-offset="3520" max-vertical-offset="4200" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Lattice.py">
@@ -525,35 +500,55 @@
         <state line="19" column="8" selection-start="561" selection-end="561" vertical-scroll-proportion="-0.98088235" vertical-offset="922" max-vertical-offset="2025" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/unitTest.py">
+    <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="11" selection-start="37" selection-end="37" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="540">
+        <state line="2" column="0" selection-start="23" selection-end="23" vertical-scroll-proportion="0.044378698" vertical-offset="0" max-vertical-offset="676">
+          <folding>
+            <element signature="e#23#50#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Geometry3D.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="2" selection-start="101" selection-end="101" vertical-scroll-proportion="-1.2899408" vertical-offset="1007" max-vertical-offset="4890">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Math.py">
+    <entry file="file://$PROJECT_DIR$/unitTest.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="107" column="49" selection-start="3206" selection-end="3206" vertical-scroll-proportion="0.0" vertical-offset="1330" max-vertical-offset="2010">
+        <state line="3" column="11" selection-start="37" selection-end="37" vertical-scroll-proportion="0.06656805" vertical-offset="0" max-vertical-offset="676">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Orientation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="410" column="49" selection-start="14349" selection-end="14349" vertical-scroll-proportion="0.0" vertical-offset="5500" max-vertical-offset="6180">
+        <state line="410" column="49" selection-start="14349" selection-end="14349" vertical-scroll-proportion="0.8668639" vertical-offset="5504" max-vertical-offset="6180">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/__init__.py">
+    <entry file="file://$PROJECT_DIR$/Math.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="29" selection-start="344" selection-end="344" vertical-scroll-proportion="0.33088234" vertical-offset="0" max-vertical-offset="680" />
+        <state line="107" column="49" selection-start="3206" selection-end="3206" vertical-scroll-proportion="0.40088758" vertical-offset="1334" max-vertical-offset="2010">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Geometry2D.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="96" column="0" selection-start="3175" selection-end="3175" vertical-scroll-proportion="0.0" vertical-offset="1184" max-vertical-offset="4455">
+          <folding>
+            <element signature="e#104#139#0" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Canvas.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="111" column="31" selection-start="3203" selection-end="3203" vertical-scroll-proportion="0.41081873" vertical-offset="1384" max-vertical-offset="2670">
+        <state line="146" column="78" selection-start="5072" selection-end="5072" vertical-scroll-proportion="0.8002958" vertical-offset="1649" max-vertical-offset="2670">
           <folding />
         </state>
       </provider>

@@ -28,6 +28,8 @@ class Line2D(Line):
     """2D line class for planar analysis"""
     def __init__(self, pt_start, pt_end):
         """Using two 2D point to define a 2D line"""
+        assert isinstance(pt_start, Point2D)
+        assert isinstance(pt_end, Point2D)
         super(Line2D, self).__init__(pt_start, pt_end)
 
     def __str__(self):
@@ -79,6 +81,18 @@ class Line2D(Line):
                 return temp_pt
             else:
                 return None
+
+    def get_discrete_pts(self, step=5):
+        """ return a list of coordinates discretize the line """
+        step_size = int(self.length / float(step)) + 2  # get number of segments for current line
+        t = np.linspace(0, 1, step_size)
+        pts = []
+        # discretizing
+        for item in t:
+            x = self.start_pt.x + (self.end_pt.x - self.start_pt.x) * item
+            y = self.start_pt.y + (self.end_pt.y - self.start_pt.y) * item
+            pts.append((x, y))
+        return pts
 
 
 class Polygon2D(object):
