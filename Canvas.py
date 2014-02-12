@@ -118,7 +118,7 @@ class PoleFigure(object):
             else:
                 tmp = PoleFigure.get_permutations(each_plane)
             # second categorised with grain ID
-            my_marker = "d"  # default marker
+            my_marker = "."  # default marker
             for each_euler in self.__data:
                 if self.unique_marker:
                     my_marker = marker.next()
@@ -146,6 +146,7 @@ class PoleFigure(object):
         plt.legend(loc='upper left', numpoints=1, ncol=6, fontsize=8, bbox_to_anchor=(0, 0))
         plt.title(self.title)
         plt.savefig(self.title + "." + self.output)
+        plt.clf()
 
     @classmethod
     def get_permutations(cls, plane):

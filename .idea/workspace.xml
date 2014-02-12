@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2a83a358-a53f-4c5b-90f6-dbbe48d04779" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Canvas.py" afterPath="$PROJECT_DIR$/Canvas.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Geometry2D.py" afterPath="$PROJECT_DIR$/Geometry2D.py" />
     </list>
     <ignored path="ezxtal.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -27,10 +26,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Canvas.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Canvas.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Canvas.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="50" selection-start="180" selection-end="180" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2625">
+            <state line="148" column="17" selection-start="5268" selection-end="5268" vertical-scroll-proportion="0.40265486" vertical-offset="1947" max-vertical-offset="2640">
               <folding>
                 <element signature="e#182#200#0" expanded="true" />
               </folding>
@@ -38,10 +37,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Math.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Math.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Math.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="105" column="29" selection-start="3031" selection-end="3056" vertical-scroll-proportion="0.35840708" vertical-offset="1332" max-vertical-offset="2010">
+            <state line="116" column="7" selection-start="3568" selection-end="3568" vertical-scroll-proportion="0.0" vertical-offset="1332" max-vertical-offset="2010">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="2" column="0" selection-start="23" selection-end="23" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150">
               <folding />
             </state>
           </provider>
@@ -73,8 +81,8 @@
         <option value="$PROJECT_DIR$/unitTest.py" />
         <option value="$PROJECT_DIR$/Orientation.py" />
         <option value="$PROJECT_DIR$/__init__.py" />
-        <option value="$PROJECT_DIR$/Canvas.py" />
         <option value="$PROJECT_DIR$/Geometry2D.py" />
+        <option value="$PROJECT_DIR$/Canvas.py" />
       </list>
     </option>
   </component>
@@ -517,22 +525,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2" column="0" selection-start="23" selection-end="23" vertical-scroll-proportion="0.044247787" vertical-offset="0" max-vertical-offset="678">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Canvas.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="50" selection-start="180" selection-end="180" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2625">
-          <folding>
-            <element signature="e#182#200#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Geometry2D.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="102" column="33" selection-start="3497" selection-end="3497" vertical-scroll-proportion="0.5545723" vertical-offset="1109" max-vertical-offset="4530">
@@ -540,10 +532,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="2" column="0" selection-start="23" selection-end="23" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="150">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Math.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="105" column="29" selection-start="3031" selection-end="3056" vertical-scroll-proportion="0.35840708" vertical-offset="1332" max-vertical-offset="2010">
+        <state line="116" column="7" selection-start="3568" selection-end="3568" vertical-scroll-proportion="0.0" vertical-offset="1332" max-vertical-offset="2010">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Canvas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="148" column="17" selection-start="5268" selection-end="5268" vertical-scroll-proportion="0.40265486" vertical-offset="1947" max-vertical-offset="2640">
+          <folding>
+            <element signature="e#182#200#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
