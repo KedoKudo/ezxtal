@@ -14,6 +14,7 @@ import numpy as np
 import itertools
 import matplotlib.pyplot as plt
 from ezxtal import EulerAngle
+from ezxtal import RotationMatrix
 
 
 class PoleFigure(object):
@@ -28,6 +29,7 @@ class PoleFigure(object):
         self.__is_literal = True  # whether to use permutation to get a family of planes
         self.__lattice_vector = np.array([1.0, 1.0, 1.0])  # most simple case as default
         self.__output = "pdf"
+        self.__ref = np.eye(3)  # matrix used to define xtal unit cell in reference configuration
         # set up pyplot
         self.__fig = plt.figure()
         self.__fig.add_subplot(111, aspect='equal')
@@ -88,6 +90,10 @@ class PoleFigure(object):
         """ add one family to the pole figure """
         self.__plane_list.append(plane)
 
+    def set_ref(self, new_ref):
+        """ set xtal unit cell in reference configuration """
+        self.__ref = new_ref
+
     @property
     def title(self):
         return str(self.__title)
@@ -119,12 +125,14 @@ class PoleFigure(object):
                 tmp = PoleFigure.get_permutations(each_plane)
             # second categorised with grain ID
             my_marker = "."  # default marker
-            for each_euler in self.__data:
+            for i in range(len(self.__data)):
+                each_euler = self.__data[i]
                 if self.unique_marker:
                     my_marker = marker.next()
                     plt.rcParams['text.usetex'] = False  # otherwise, '^' will cause trouble
                 euler = EulerAngle(each_euler[0], each_euler[1], each_euler[2])
-                rot_m = euler.rotation_matrix
+                rot_m = np.dot(self.__ref, euler.rotation_matrix)
+                self.__data[i] = RotationMatrix(rot_m).euler_angle
                 for each_pole in tmp:
                     tmp_pole = np.array(each_pole) / self.lattice_vector
                     tmp_pole /= np.linalg.norm(tmp_pole)
@@ -146,7 +154,7 @@ class PoleFigure(object):
         plt.legend(loc='upper left', numpoints=1, ncol=6, fontsize=8, bbox_to_anchor=(0, 0))
         plt.title(self.title)
         plt.savefig(self.title + "." + self.output)
-        plt.clf()
+        plt.close()
 
     @classmethod
     def get_permutations(cls, plane):
