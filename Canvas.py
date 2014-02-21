@@ -29,6 +29,7 @@ class PoleFigure(object):
         self.__is_literal = True  # whether to use permutation to get a family of planes
         self.__lattice_vector = np.array([1.0, 1.0, 1.0])  # most simple case as default
         self.__output = "pdf"
+        self.__clr_list = None
         self.__ref = np.eye(3)  # matrix used to define xtal unit cell in reference configuration
         # set up pyplot
         self.__fig = plt.figure()
@@ -94,6 +95,10 @@ class PoleFigure(object):
         """ set xtal unit cell in reference configuration """
         self.__ref = new_ref
 
+    def set_color_list(self, new_list):
+        """ use given list of colors (will recycle old color when reaching the end """
+        self.__clr_list = itertools.cycle(new_list)
+
     @property
     def title(self):
         return str(self.__title)
@@ -146,7 +151,11 @@ class PoleFigure(object):
                         x_list.append(y)
                         y_list.append(-x)
             # start plotting
-            plt.scatter(x_list, y_list, marker=my_marker, c=np.random.rand(3, 1), label=label)
+            if self.__clr_list is not None:
+                clr = self.__clr_list.next()
+            else:
+                clr = np.random.rand(3, 1)
+            plt.scatter(x_list, y_list, marker=my_marker, c=clr, label=label, edgecolor='none')
         # label x/y axis
         plt.text(1.1, 0.0, "y", horizontalalignment='center', verticalalignment='center', fontsize=15)
         plt.text(0.0, -1.1, "x", horizontalalignment='center', verticalalignment='center', fontsize=15)

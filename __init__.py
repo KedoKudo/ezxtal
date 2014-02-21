@@ -12,6 +12,7 @@ from Geometry2D import Polygon2D
 from Orientation import EulerAngle
 from Orientation import RotationMatrix
 from Orientation import Quaternion
+from Orientation import average_orientation
 
 from Canvas import PoleFigure
 

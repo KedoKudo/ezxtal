@@ -405,7 +405,8 @@ def average_orientation(orientation_list):
         tmp_q = Quaternion(tmp)
         tmp_mtrx += np.outer(tmp_q.quaternion, tmp_q.conj)
     # take the average
-    tmp_mtrx /= len(orientation_list)
+    tmp_mtrx /= len(orientation_list) + 1
     eig, vec = La.eig(tmp_mtrx)
+    eig = list(eig)
     # the largest eigenvalue correspond to the average quaternion
     return Quaternion(vec.T[eig.index(max(eig))])
