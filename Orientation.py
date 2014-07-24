@@ -21,7 +21,6 @@ ERROR = 1e-6
 
 
 ##
-#TODO: Need class for Quaternion
 #TODO: There seems to be some bugs in the Rodrigues class, do not use it until it's fixed.
 #
 
