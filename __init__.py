@@ -2,6 +2,8 @@ __author__ = 'Kirito'
 
 from Lattice import Lattice
 
+from SlipSystem import SlipSystem
+
 from Geometry3D import Point
 from Geometry3D import Line
 

@@ -113,6 +113,76 @@ def bravis_miller_2_cartesian(index4, c_over_a=1.58):
     return cartesian/np.linalg.norm(cartesian)
 
 
+def nelder_mead(dict_vtx, o_func, check_vtx,
+                alpha=1, gamma=2, rho=-0.5, sigma=0.5):
+    """
+    @description: Nelder-Mead method for one iteration
+    @parameter: dict_vtx = {f(x_n): vtx_n} where vtx_n is one vertex (INPUT);
+                o_func: objective function to evaluate each vertex (REQUIRED);
+                check_vtx: function for validating each vertex (REQUIRED);
+                alpha = 1  # reflection coefficient;
+                gamma = 2  # expansion coefficient;
+                rho = -0.5  # contraction coefficient;
+                sigma = 0.5  # shrink coefficient
+    @reference: https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+    """
+    wk_vtx = dict_vtx.copy()  # always working on a copy
+    tmp_fs = sorted(wk_vtx.keys())  # sorted objective values
+    f_0 = tmp_fs[0]  # best vertex value
+    f_nn = tmp_fs[-2]  # 2nd worst value
+    f_n = tmp_fs[-1]  # worst vertex value
+    vtx_0 = np.array(wk_vtx[f_0])  # best vertex
+    vtx_n = np.array(wk_vtx.pop(f_n))  # remove the worst vertex from wk_vtx
+    # calculate center of gravity (x_o) for x_i (i=0:n-1)
+    tmp = np.array([0.0] * len(vtx_0))
+    for key in wk_vtx:
+        tmp += np.array(wk_vtx[key])
+    vtx_o = tmp / len(wk_vtx)
+    # calculate reflection
+    vtx_r = vtx_o + alpha * (vtx_o - vtx_n)
+    vtx_r = check_vtx(vtx_r)  # check bounds
+    # evaluate the reflection vertex
+    f_r = o_func(vtx_r)
+    # now walk through all possible cases
+    if f_0 <= f_r < f_nn:
+        wk_vtx[f_r] = vtx_r  # replace the worst vertex with reflection
+        return wk_vtx
+    elif f_r < f_0:
+        # compute expanded vertex
+        vtx_e = vtx_o + gamma*(vtx_o - vtx_n)
+        vtx_e = check_vtx(vtx_e)  # force check bounds
+        f_e = o_func(vtx_e)
+        if f_e < f_r:
+            wk_vtx[f_e] = vtx_e  # replace the worst vertex with expanded
+        else:
+            wk_vtx[f_r] = vtx_r  # replace the worst vertex with reflection
+        return wk_vtx
+    elif f_r >= f_nn:
+        # compute contracted point
+        vtx_c = vtx_o + rho*(vtx_o - vtx_n)
+        vtx_c = check_vtx(vtx_c)  # force check newly computed vertex
+        f_c = o_func(vtx_c)
+        if f_c < f_n:
+            wk_vtx[f_c] = vtx_c  # replace the worst vertex with contraction
+        else:
+            # rare case that contracting away from the largest point increases
+            # f, something that cannot happen sufficiently close to a
+            # non-singular minimum. In that case we contract towards the
+            # lowest point in the expectation of finding a simpler landscape.
+            tmp_vtxs = wk_vtx
+            wk_vtx = {f_0: vtx_0}
+            tmp_vtxs.pop(f_0)  # remove the best case from update queue
+            tmp_vtxs[f_n] = vtx_n  # put the worst vertex back in queue
+            for key in tmp_vtxs:
+                tmp_vtx = np.array(tmp_vtxs[key])
+                new_vtx = vtx_0 + sigma*(tmp_vtx - vtx_0)
+                new_vtx = check_vtx(new_vtx)  # force check new vertex
+                new_f = o_func(new_vtx)
+                wk_vtx[new_f] = new_vtx
+            # after all update finished
+        return wk_vtx
+
+
 def debug():
     """
     For debug purpose
