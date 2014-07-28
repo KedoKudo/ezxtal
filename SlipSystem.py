@@ -10,7 +10,8 @@ class SlipSystem(object):
     for various material.
     """
 
-    def get_data(self, xtal='hcp', c_over_a=1.58):
+    @staticmethod
+    def get_data(xtal='hcp'):
         """
         return a list of slip systems based on given slip system with
         data structure [[slip plane], [slip direction]]
