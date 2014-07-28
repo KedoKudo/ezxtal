@@ -17,9 +17,8 @@ class SlipSystem(object):
         data structure [[slip plane], [slip direction]]
         """
         #NOTE: The data structure here is different from DAMASK convention.
-        #      It is designed to follow Dr. Bieler's convention for describing
-        #      slip systems.
-        data = []  # list is more economic than dict
+        #      It is designed to follow DAMASK convention.
+        data = [0]*27  # list is more economic than dict
         if xtal == 'hcp':
             # Basal Slip {0001}<1120>
             data[0] = [[0, 0, 0, 1], [2, -1, -1, 0]]
@@ -35,24 +34,24 @@ class SlipSystem(object):
             data[8] = [[-1, -1, 2, 0], [1, -1, 0, 0]]
             # Pyramidal a Slip {1011}<1120>
             data[9] = [[0, 1, -1, 1], [2, -1, -1, 0]]
-            data[10] = [[-1, 1, 0, 1], [1, 1, -2, 0]]
-            data[11] = [[-1, 0, 1, 1], [-1, 2, -1, 0]]
-            data[12] = [[0, -1, 1, 1], [-2, 1, 1, 0]]
-            data[13] = [[1, -1, 0, 1], [-1, -1, 2, 0]]
+            data[10] = [[-1, 0, 1, 1], [-1, 2, -1, 0]]
+            data[11] = [[1, -1, 0, 1], [-1, -1, 2, 0]]
+            data[12] = [[-1, 1, 0, 1], [1, 1, -2, 0]]
+            data[13] = [[0, -1, 1, 1], [-2, 1, 1, 0]]
             data[14] = [[1, 0, -1, 1], [1, -2, 1, 0]]
             # Pyramidal c+a Slip {1011}<2113>
-            data[15] = [[0, 1, -1, 1], [-1, 2, -1, -3]]
-            data[16] = [[0, 1, -1, 1], [1, 1, -2, -3]]
-            data[17] = [[-1, 1, 0, 1], [-2, 1, 1, -3]]
-            data[18] = [[-1, 1, 0, 1], [-1, 2, -1, -3]]
-            data[19] = [[-1, 0, 1, 1], [-1, -1, 2, -3]]
-            data[20] = [[-1, 0, 1, 1], [-2, 1, 1, -3]]
-            data[21] = [[0, -1, 1, 1], [1, -2, 1, -3]]
-            data[22] = [[0, -1, 1, 1], [-1, -1, 2, -3]]
-            data[23] = [[1, -1, 0, 1], [2, -1, -1, -3]]
-            data[24] = [[1, -1, 0, 1], [1, -2, 1, -3]]
-            data[25] = [[1, 0, -1, 1], [1, 1, -2, -3]]
-            data[26] = [[1, 0, -1, 1], [2, -1, -1, -3]]
+            data[15] = [[-1, 1, 0, 1], [2, -1, -1, 3]]
+            data[16] = [[-1, 1, 0, 1], [1, -2, 1, 3]]
+            data[17] = [[1, 0, -1, 1], [-1, -1, 2, 3]]
+            data[18] = [[1, 0, -1, 1], [-2, 1, 1, 3]]
+            data[19] = [[0, -1, 1, 1], [-1, 2, -1, 3]]
+            data[20] = [[0, -1, 1, 1], [1, 1, -2, 3]]
+            data[21] = [[1, -1, 0, 1], [-2, 1, 1, 3]]
+            data[22] = [[1, -1, 0, 1], [-1, 2, -1, 3]]
+            data[23] = [[-1, 0, 1, 1], [1, 1, -2, 3]]
+            data[24] = [[-1, 0, 1, 1], [2, -1, -1, 3]]
+            data[25] = [[0, 1, -1, 1], [1, -2, 1, 3]]
+            data[26] = [[0, 1, -1, 1], [-1, -1, 2, 3]]
         else:
             print "will support in the future..."
             sys.exit(-1)
