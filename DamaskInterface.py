@@ -23,7 +23,9 @@ def read_table(file_path):
     header = raw_data.pop(0).split()
     out_table = {}  # {header:[data_vector]}
     # reading in data
-    data = [[float(item) for item in line.split()] for line in raw_data]
+    data = [[float(item) if item != 'n/a' else float('NaN')
+             for item in line.split()]
+            for line in raw_data]
     data = np.array(data)  # this allows selecting column
     for i in range(len(header)):
         tmp = data[:, i]
