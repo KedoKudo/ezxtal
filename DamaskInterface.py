@@ -5,9 +5,7 @@
 #
 import numpy as np
 
-##
-# quick function for reading damask table
-#
+
 def read_table(file_path):
     """
     @description: read in an ASCII table with DAMASK format.
@@ -20,7 +18,8 @@ def read_table(file_path):
     # remove header
     num_header = int(raw_data.pop(0).split()[0])
     if num_header > 1:
-        for i in range(num_header - 1): raw_data.pop(0)  # remove command history
+        for i in range(num_header - 1):
+            raw_data.pop(0)  # remove command history
     header = raw_data.pop(0).split()
     out_table = {}  # {header:[data_vector]}
     # reading in data
