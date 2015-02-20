@@ -2,7 +2,7 @@
 
 __author__ = "KenZ"
 
-#__Developer Note:
+# Developer Note:
 #   This is a simple module that contains some very useful math functions regarding calculation
 
 
@@ -11,6 +11,7 @@ import numpy as np
 
 class Vector:
     """Multidimensinal vector class"""
+
     def __init__(self, d):
         """Initialize with d-dimensional vector of zeros"""
         self._coords = [0] * d
@@ -77,20 +78,20 @@ class Vector:
 
 
 def find_angle(sin_val, cos_val):
-        """find angle in radians based on value of sine and cosine
+    """find angle in radians based on value of sine and cosine
 
         :param sin_val: sin(theta)
         :param cos_val: cos(theta)
         """
-        sin_val = float(sin_val)
-        cos_val = float(cos_val)
-        if abs(sin_val) <= 1e-6:
-            theta = 0.0 if cos_val > 0.0 else np.pi  # special case: x-axis
-        elif sin_val > 1e-6:
-            theta = np.arccos(cos_val)  # 1 & 2 Quadrant
-        else:
-            theta = 2*np.pi - np.arccos(cos_val)  # 3 & 4 Quadrant
-        return theta
+    sin_val = float(sin_val)
+    cos_val = float(cos_val)
+    if abs(sin_val) <= 1e-6:
+        theta = 0.0 if cos_val > 0.0 else np.pi  # special case: x-axis
+    elif sin_val > 1e-6:
+        theta = np.arccos(cos_val)  # 1 & 2 Quadrant
+    else:
+        theta = 2 * np.pi - np.arccos(cos_val)  # 3 & 4 Quadrant
+    return theta
 
 
 def delta(i, j):
@@ -107,10 +108,10 @@ def bravis_miller_2_cartesian(index4, c_over_a=1.58):
     """ convert Bravis-Miller indices to standard Cartesian Coordinates """
     # a 3x4 matrix that will convert both slip direction and plane normal from Bravis-Miller to Standard Miller indices
     miller2cartesian = np.array([[1, 0, 0, 0],
-                                 [1/np.sqrt(3), 2/np.sqrt(3), 0, 0],
-                                 [0, 0, 0, 1/c_over_a]])
+                                 [1 / np.sqrt(3), 2 / np.sqrt(3), 0, 0],
+                                 [0, 0, 0, 1 / c_over_a]])
     cartesian = np.dot(miller2cartesian, index4)
-    return cartesian/np.linalg.norm(cartesian)
+    return cartesian / np.linalg.norm(cartesian)
 
 
 def nelder_mead(dict_vtx, o_func, check_vtx,
@@ -149,7 +150,7 @@ def nelder_mead(dict_vtx, o_func, check_vtx,
         return wk_vtx
     elif f_r < f_0:
         # compute expanded vertex
-        vtx_e = vtx_o + gamma*(vtx_o - vtx_n)
+        vtx_e = vtx_o + gamma * (vtx_o - vtx_n)
         vtx_e = check_vtx(vtx_e)  # force check bounds
         f_e = o_func(vtx_e)
         if f_e < f_r:
@@ -159,7 +160,7 @@ def nelder_mead(dict_vtx, o_func, check_vtx,
         return wk_vtx
     elif f_r >= f_nn:
         # compute contracted point
-        vtx_c = vtx_o + rho*(vtx_o - vtx_n)
+        vtx_c = vtx_o + rho * (vtx_o - vtx_n)
         vtx_c = check_vtx(vtx_c)  # force check newly computed vertex
         f_c = o_func(vtx_c)
         if f_c < f_n:
@@ -175,11 +176,11 @@ def nelder_mead(dict_vtx, o_func, check_vtx,
             tmp_vtxs[f_n] = vtx_n  # put the worst vertex back in queue
             for key in tmp_vtxs:
                 tmp_vtx = np.array(tmp_vtxs[key])
-                new_vtx = vtx_0 + sigma*(tmp_vtx - vtx_0)
+                new_vtx = vtx_0 + sigma * (tmp_vtx - vtx_0)
                 new_vtx = check_vtx(new_vtx)  # force check new vertex
                 new_f = o_func(new_vtx)
                 wk_vtx[new_f] = new_vtx
-            # after all update finished
+                # after all update finished
         return wk_vtx
 
 
@@ -190,10 +191,11 @@ def debug():
     print "Debug begins"
     # check for find_angle
     for i in range(0, 1000):
-        theta = 2 * np.pi/1e3 * i
+        theta = 2 * np.pi / 1e3 * i
         error = theta - find_angle(np.sin(theta), np.cos(theta))
         if error > 1e-10:
             print "{}".format(error)
+
 
 if __name__ == "__main__":
     debug()
