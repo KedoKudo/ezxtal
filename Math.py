@@ -184,7 +184,7 @@ def nelder_mead(dict_vtx, o_func, check_vtx,
         return wk_vtx
 
 
-def meshgrid(*arrs):
+def meshgridT(*arrs):
     """code inspired by http://stackoverflow.com/questions/1827489/numpy-meshgrid-in-3d"""
     arrs = tuple(reversed(arrs))
     arrs = tuple(arrs)
