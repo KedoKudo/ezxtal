@@ -3,7 +3,7 @@
 __author__ = "KenZ"
 
 # Developer Note:
-#   This is a simple module that contains some very useful math functions regarding calculation
+# This is a simple module that contains some very useful math functions regarding calculation
 
 
 import numpy as np
@@ -182,6 +182,25 @@ def nelder_mead(dict_vtx, o_func, check_vtx,
                 wk_vtx[new_f] = new_vtx
                 # after all update finished
         return wk_vtx
+
+
+def meshgrid(*arrs):
+    """code inspired by http://stackoverflow.com/questions/1827489/numpy-meshgrid-in-3d"""
+    arrs = tuple(reversed(arrs))
+    arrs = tuple(arrs)
+    lens = np.array(map(len, arrs))
+    dim = len(arrs)
+    ans = []
+    for i, arr in enumerate(arrs):
+        slc = np.ones(dim, 'i')
+        slc[i] = lens[i]
+        arr2 = np.asarray(arr).reshape(slc)
+        for j, sz in enumerate(lens):
+            if j != i:
+                arr2 = arr2.repeat(sz, axis=j)
+
+        ans.insert(0, arr2)
+    return tuple(ans)
 
 
 def debug():
