@@ -204,7 +204,9 @@ def meshgrid2(*arrs):
 
 
 def get_barycentric(pt, simplex):
-    """return the barycentric coordinates of a point w.r.t. simplex"""
+    """return the barycentric coordinates of a point w.r.t. simplex,
+    NOTE: most module has their own method to calculate Barycentric coordinates, only use this when default one is not
+    provided."""
     dim = len(pt)
     if (dim == 2):
         vtx1,vtx2,vtx3 = simplex[0],simplex[1],simplex[2]
