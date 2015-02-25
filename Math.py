@@ -184,7 +184,7 @@ def nelder_mead(dict_vtx, o_func, check_vtx,
         return wk_vtx
 
 
-def meshgridT(*arrs):
+def meshgrid2(*arrs):
     """code inspired by http://stackoverflow.com/questions/1827489/numpy-meshgrid-in-3d"""
     arrs = tuple(reversed(arrs))
     arrs = tuple(arrs)
@@ -201,6 +201,42 @@ def meshgridT(*arrs):
 
         ans.insert(0, arr2)
     return tuple(ans)
+
+
+def get_barycentric(pt, simplex):
+    """return the barycentric coordinates of a point w.r.t. simplex"""
+    dim = len(pt)
+    if (dim == 2):
+        vtx1,vtx2,vtx3 = simplex[0],simplex[1],simplex[2]
+        x1,y1 = vtx1[0],vtx1[1]
+        x2,y2 = vtx2[0],vtx2[1]
+        x3,y3 = vtx3[0],vtx3[1]
+        xp,yp = pt[0],pt[1]
+
+        common_d = (y2-y3)*(x1-x3) + (x3-x2)*(y1-y3)
+        lambda_1 = ((y2-y3)*(xp-x3) + (x3-x2)*(yp-y3))/((y2-y3)*(x1-x3) + (x3-x2)*(y1-y3))
+        lambda_2 = ((y3-y1)*(xp-x3) + (x1-x3)*(yp-y3))/((y2-y3)*(x1-x3) + (x3-x2)*(y1-y3))
+        lambda_3 = 1.0 - lambda_w(1) - lambda_w(2)
+
+        return (lambda_1, lambda_2, lambda_3)
+    elif (dim == 3):
+        vtx1,vtx2,vtx3,vtx4 = simplex[0],simplex[1],simplex[2],simplex[3]
+        x1,y1,z1 = vtx1[0],vtx1[1],vtx1[2]
+        x2,y2,z2 = vtx2[0],vtx2[1],vtx2[2]
+        x3,y3,z3 = vtx3[0],vtx3[1],vtx3[2]
+        x4,y4,z4 = vtx4[0],vtx4[1],vtx4[2]
+        xp,yp,zp = pt[0],pt[1],pt[2]
+
+        tmp_mtx = np.array([[x1-x4, x2-x4, x3-x4],
+                            [y1-y4, y2-y4, y3-y4],
+                            [z1-z4, z2-z4, z3-z4]])
+        tmp_vec = np.array([xp-x4, yp-y4, zp-z4])
+        [lambda_1,lambda_2,lambda_3] = np.linalg.solve(tmp_mtx, tmp_vec)
+        lambda_4 = 1 - sum([lambda_1,lambda_2,lambda_3])
+
+        return (lambda_1, lambda_2, lambda_3, lambda_4)
+    else:
+        raise(ValueError)  # do not support higher than 3D
 
 
 def debug():
