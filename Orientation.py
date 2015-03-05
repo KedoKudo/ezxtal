@@ -2,12 +2,13 @@
 
 __author__ = "KenZ"
 
-#__Developer Note:
+# __Developer Note:
 #   A set of class used for describing orientation in space
 #   Assuming that Euler angles are always in degree.
 
 
 import numpy as np
+from numpy import sin, cos, pi, arccos
 import numpy.linalg as La
 import cmath
 from Math import find_angle
@@ -71,14 +72,12 @@ class EulerAngle(XtalOrientation):
 
     def __init__(self, phi1, phi, phi2):
         """ store the Euler angle in radians """
-        deg2rad = np.pi / 180
-        self.__phi1 = phi1 * deg2rad
-        self.__phi = phi * deg2rad
-        self.__phi2 = phi2 * deg2rad
+        deg2rad = pi / 180
+        self.__phi1, self.__phi, self.__phi2 = phi1 * deg2rad, phi * deg2rad, phi2 * deg2rad
 
     def __str__(self):
         """ output Euler angles using degrees """
-        rad2deg = 180 / np.pi
+        rad2deg = 180 / pi
         out_str = "[{:.4f}, {:.4f}, {:.4f}]".format(self.__phi1 * rad2deg,
                                                     self.__phi * rad2deg,
                                                     self.__phi2 * rad2deg)
@@ -90,12 +89,12 @@ class EulerAngle(XtalOrientation):
     @property
     def euler_angle(self):
         """ Euler angles in degrees """
-        rad2deg = 180.0 / np.pi
+        rad2deg = 180.0 / pi
         return [self.__phi1 * rad2deg, self.__phi * rad2deg, self.__phi2 * rad2deg]
 
     def set_euler_angle(self, new_angles):
         """ set new Euler angles with vec3"""
-        deg2rad = np.pi / 180
+        deg2rad = pi / 180
         self.__phi1 = new_angles[0] * deg2rad
         self.__phi = new_angles[1] * deg2rad
         self.__phi2 = new_angles[2] * deg2rad
@@ -119,21 +118,21 @@ class EulerAngle(XtalOrientation):
     def orientation_matrix(self):
         """ return orientation matrix based Bunge Euler angle"""
         ##
-        # Note: Orientation matrix (g) is the transpose of teh standard rotation matrix generally defined in Math and
-        #       many other fields. The reason for material science people to use this approach is because Bunge was more
-        #       interested in converting sample (global) coordinate to crystal (local). Since a lot of material science
-        #       people are accustomed to the Bunge system, which is based on orientation matrix instead of the more
-        #       commonly accepted rotation matrix (R), g is generally computed instead of R during computation material
-        #       science.
+        # Note: Orientation matrix (g) is the transpose of the standard rotation matrix (generally defined in Math and
+        #       many other fields). The reason for material science people to use this approach is because Bunge was
+        #       more interested in converting sample (global) coordinate to crystal (local).
+        #       Since a lot of material science people are accustomed to the Bunge system, which is based on
+        #       orientation matrix instead of the more commonly accepted rotation matrix (R), g is generally computed
+        #       instead of R in computation material science.
         #
-        g_phi1 = np.array([[np.cos(self.__phi1), np.sin(self.__phi1), 0.0],
-                           [-np.sin(self.__phi1), np.cos(self.__phi1), 0.0],
+        g_phi1 = np.array([[cos(self.__phi1), sin(self.__phi1), 0.0],
+                           [-sin(self.__phi1), cos(self.__phi1), 0.0],
                            [0.0, 0.0, 1.0]])
         g_phi = np.array([[1.0, 0.0, 0.0],
-                          [0.0, np.cos(self.__phi), np.sin(self.__phi)],
-                          [0.0, -np.sin(self.__phi), np.cos(self.__phi)]])
-        g_phi2 = np.array([[np.cos(self.__phi2), np.sin(self.__phi2), 0.0],
-                           [-np.sin(self.__phi2), np.cos(self.__phi2), 0.0],
+                          [0.0, cos(self.__phi), sin(self.__phi)],
+                          [0.0, -sin(self.__phi), cos(self.__phi)]])
+        g_phi2 = np.array([[cos(self.__phi2), sin(self.__phi2), 0.0],
+                           [-sin(self.__phi2), cos(self.__phi2), 0.0],
                            [0.0, 0.0, 1.0]])
         g = np.dot(g_phi2, np.dot(g_phi, g_phi1))  # the total orientation matrix is g = g_phi2 * g_phi * g_phi1
         for i in range(3):
@@ -150,28 +149,24 @@ class EulerAngle(XtalOrientation):
     @property
     def rotation_axis(self):
         """ return the rotation axis """
-        rot_m = RotationMatrix(self.rotation_matrix)
-        return rot_m.rotation_axis
+        return RotationMatrix(self.rotation_matrix).rotation_axis
 
     @property
     def rotation_angle(self):
         """ return the rotation angle around the rotation axis in radians"""
-        rot_m = RotationMatrix(self.rotation_matrix)
-        return rot_m.rotation_angle
+        return RotationMatrix(self.rotation_matrix).rotation_angle
 
     @property
     def rotation_angled(self):
         """ return the rotation angle in degree """
-        ang = float(self.rotation_angle) * 180.0 / np.pi
-        return ang
+        return float(self.rotation_angle) * 180.0 / pi
 
     @property
     def quaternion(self):
         """ return the quaternion vector [w, x, y, z] """
         ang = self.rotation_angle
         axs = self.rotation_axis
-        tmp_q = [np.cos(ang/2.0), np.sin(ang/2.0)*axs[0], np.sin(ang/2.0)*axs[1], np.sin(ang/2.0)*axs[2]]
-        return tmp_q
+        return [cos(ang / 2.0), sin(ang / 2.0) * axs[0], sin(ang / 2.0) * axs[1], sin(ang / 2.0) * axs[2]]
 
 
 class RotationMatrix(XtalOrientation):
@@ -180,14 +175,11 @@ class RotationMatrix(XtalOrientation):
 
     def __init__(self, rotation_matrix):
         """ initialize rotation matrix with a 3x3 numpy array """
-        self.__r = np.zeros((3, 3))
-        for i in range(3):
-            for j in range(3):
-                self.__r[i, j] = rotation_matrix[i, j]
+        self.__r = rotation_matrix
 
     def __len__(self):
         """ size of the rotation matrix """
-        return "3 x 3"
+        return 3, 3
 
     @property
     def rotation_matrix(self):
@@ -211,7 +203,7 @@ class RotationMatrix(XtalOrientation):
         # Special case
         if abs(ang) < ERROR:
             return [1.0, 0.0, 0.0]  # no rotation at all, pick x as default
-        elif abs(ang - np.pi) < ERROR:  # rotate 180 degree
+        elif abs(ang - pi) < ERROR:  # rotate 180 degree
             for i in range(3):
                 if abs(1 - values[i]) < ERROR:
                     return np.array(axis[i])
@@ -229,46 +221,47 @@ class RotationMatrix(XtalOrientation):
     @property
     def rotation_angle(self):
         """ Get rotation angle around the rotation axis w.r.t the result in self.rotation_axis in radians """
-        values, axis = La.eig(self.__r)
-        return max([cmath.phase(item) for item in values])  # always choose the positive one (personal preference)
+        # use simpler math to get rotation angle
+        return arccos((np.trace(self.__r) - 1.0) / 2.0)
 
     @property
     def rotation_angled(self):
         """ get rotation angle around the axis in degree """
-        ang = float(self.rotation_angle) * 180.0 / np.pi
-        return ang
+        return float(self.rotation_angle) * 180.0 / np.pi
 
     @property
     def euler_angle(self):
-        """ return one set of Euler Angle w.r.t the rotation matrix
-            NOTE: Euler Angles are always in degrees """
+        """ return Euler Angle in radiance"""
         angles = [0, 0, 0]
-        if np.absolute(self.__r[2, 2] - 1.0) < 1e-6:
-        #simple one rotation case
-            phi1 = find_angle(-self.__r[0, 1], self.__r[0, 0])
-            angles[0] = phi1 * 180.0 / np.pi
+        if abs(self.__r[2, 2] - 1.0) < 1e-6:
+            phi1 = find_angle(-self.__r[0, 1], self.__r[0, 0])  # simple one rotation case
+            angles[0] = phi1
         else:
-            phi = np.arccos(self.__r[2, 2])
-            angles[1] = phi * 180.0 / np.pi
-            #calculate __phi1
-            sin_phi1 = self.__r[0, 2] / np.sin(phi)
-            cos_phi1 = -self.__r[1, 2] / np.sin(phi)
+            phi = arccos(self.__r[2, 2])
+            angles[1] = phi
+            # calculate __phi1
+            sin_phi1 = self.__r[0, 2] / sin(phi)
+            cos_phi1 = -self.__r[1, 2] / sin(phi)
             phi1 = find_angle(sin_phi1, cos_phi1)
-            angles[0] = phi1 * 180.0 / np.pi
-            #calculate __phi2
-            sin_phi2 = self.__r[2, 0] / np.sin(phi)
-            cos_phi2 = self.__r[2, 1] / np.sin(phi)
+            angles[0] = phi1
+            # calculate __phi2
+            sin_phi2 = self.__r[2, 0] / sin(phi)
+            cos_phi2 = self.__r[2, 1] / sin(phi)
             phi2 = find_angle(sin_phi2, cos_phi2)
-            angles[2] = phi2 * 180.0 / np.pi
+            angles[2] = phi2
         return angles
+
+    @property
+    def euler_angled(self):
+        """ return Euler angle in degree """
+        return [item * 180.0 / pi for item in self.euler_angle]
 
     @property
     def quaternion(self):
         """ return an equivalent quaternion [w, x, y ,z] """
         ang = self.rotation_angle
         axs = self.rotation_axis
-        tmp_q = [np.cos(ang/2.0), np.sin(ang/2.0)*axs[0], np.sin(ang/2.0)*axs[1], np.sin(ang/2.0)*axs[2]]
-        return tmp_q
+        return [cos(ang / 2.0), sin(ang / 2.0) * axs[0], sin(ang / 2.0) * axs[1], sin(ang / 2.0) * axs[2]]
 
 
 class Quaternion(XtalOrientation):
@@ -314,9 +307,9 @@ class Quaternion(XtalOrientation):
         """ standard multiplication between two quaternions """
         if isinstance(other, self.__class__):
             mul_matrix_self = np.array([[self.__w, -self.__x, -self.__y, -self.__z],
-                                        [self.__x,  self.__w, -self.__z,  self.__y],
-                                        [self.__y,  self.__z,  self.__w, -self.__x],
-                                        [self.__z, -self.__y,  self.__x,  self.__w]])
+                                        [self.__x, self.__w, -self.__z, self.__y],
+                                        [self.__y, self.__z, self.__w, -self.__x],
+                                        [self.__z, -self.__y, self.__x, self.__w]])
             return np.array(np.dot(mul_matrix_self, other.quaternion))
         else:
             raise TypeError("unsupported operand type(s) for *: '{}' and '{}'.".format(self.__class__, type(other)))
@@ -359,9 +352,9 @@ class Quaternion(XtalOrientation):
         x = self.__x
         y = self.__y
         z = self.__z
-        tmp_rot = np.array([[1 - 2*(y**2 + z**2), 2*(x*y - w*z), 2*(x*z + w*y)],
-                            [2*(x*y + w*z), 1 - 2*(x**2 + z**2), 2*(y*z - w*x)],
-                            [2*(x*z - w*y), 2*(y*z + w*x), 1 - 2*(x**2 + y**2)]])
+        tmp_rot = np.array([[1 - 2 * (y ** 2 + z ** 2), 2 * (x * y - w * z), 2 * (x * z + w * y)],
+                            [2 * (x * y + w * z), 1 - 2 * (x ** 2 + z ** 2), 2 * (y * z - w * x)],
+                            [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x ** 2 + y ** 2)]])
         return tmp_rot
 
     @property
@@ -377,7 +370,7 @@ class Quaternion(XtalOrientation):
     @property
     def rotation_angle(self):
         """ return the rotation angle in radians """
-        return 2 * np.arccos(self.normalized[0])  # need to use the normalized q
+        return 2 * arccos(self.normalized[0])  # need to use the normalized q
 
     @property
     def rotation_angled(self):
