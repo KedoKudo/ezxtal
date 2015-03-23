@@ -41,7 +41,7 @@ class KmeansCluster(object):
     @staticmethod
     def _calc_inertia(center, cluster):
         """calculate inertia/error to evaluate the performance of cluster"""
-        return np.sum(np.sum([[np.linalg.norm(np.array(v) - np.array(center[i]))
+        return np.sum(np.sum([[np.linalg.norm(np.array(v) - np.array(center[i])) ** 2
                               for v in cluster[i]]
                               for i in range(len(center))]))
 
